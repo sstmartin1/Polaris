@@ -19,3 +19,19 @@ select pr.patronid
 from patronregistration pr (nolock)
 where pr.txtphonenumber=3
 and pr.phone3carrierid in (1,4,10)
+--or singles
+
+select pr.patronid
+from patronregistration pr (nolock)
+where pr.txtphonenumber=1
+and pr.phone1carrierid=1
+
+select pr.patronid
+from patronregistration pr (nolock)
+where pr.txtphonenumber=2
+and pr.phone2carrierid=1
+
+select pr.patronid
+from patronregistration pr (nolock)
+where pr.txtphonenumber=3
+and pr.phone3carrierid=1
