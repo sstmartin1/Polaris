@@ -1,0 +1,5 @@
+select BII.ISBNString
+from BibliographicISBNIndex BII
+join BibliographicRecords BR on (BR.BibliographicRecordID=BII.BibliographicRecordID)
+where BR.CreationDate> getdate()-30
+group by BII.ISBNString

@@ -1,0 +1,78 @@
+Here’s a tricky little bit of business I’ve been working on this week, and I think I finally got it figured out.  I hope you enjoy using it as much as I enjoyed writing it.  This is an extension of a location-to-location Holds Shipped report for a consortium to be run against the PolarisTransactions database.  Rather than simply giving the number of holds shipped from one location to another, it gives the number of holds shipped where the receiving library does not have any items that are ‘In’ or ‘Out’ with a record status of ‘Final’ attached to the same bib record as the item being shipped.  Of course, circulation statuses and record statuses could easily be added to that parameter mix.
+ 
+I encourage you to use this report…modify and evaluate it (I’m still not entirely sure it’s error-free), and post to the list if you find any errors or helpful improvements.  Also, can anyone point out to me how to incorporate temporary tables into Visual Studio 2005?
+--
+CREATE TABLE #ConsortiumTransits
+(TranLinkedBib int,
+TranNum int,
+SendLibID int,
+RecvLibID int,
+TranItemNum int,
+ExistingBibID int)
+ 
+CREATE TABLE #ConsortiumExistingBibs
+(BRID int,
+OwningBranchID int)
+ 
+CREATE TABLE #ConsortiumReceivingLibrary
+(TransNum int,
+ ReceivingLibID int)
+ 
+CREATE TABLE #ConsortiumTranBibs
+(TransactNum int,
+ TranBibID int)
+ 
+INSERT INTO #ConsortiumTransits (TranNum, SendLibID, TranItemNum)
+select td.TransactionID, th.organizationid, td.numValue
+from polaris.transactionheaders th (nolock) 
+left join polaris.transactiondetails td (nolock) on th.Transactionid = td.transactionid
+where th.transactiontypeid=6012 and td.transactionsubtypeid=38
+and th.transactiondate > '6-1-2010' and th.transactiondate < '7-1-2010'  --Adjust as necessary
+ 
+INSERT INTO #ConsortiumReceivingLibrary (TransNum, ReceivingLibID)
+SELECT      td.TransactionID, td.numValue 
+FROM Polaris.TransactionDetails TD (nolock)
+join Polaris.TransactionHeaders TH (nolock) on 
+td.transactionID=th.transactionID
+WHERE       th.transactiontypeID=6012 and td.transactionsubtypeID=131
+ 
+INSERT INTO #ConsortiumTranBibs (TransactNum, TranBibID)
+SELECT      td.TransactionID, td.numValue
+FROM Polaris.TransactionDetails TD (nolock)
+join Polaris.TransactionHeaders TH (nolock) on 
+td.transactionID=th.transactionID
+WHERE       th.transactiontypeID=6012 and td.transactionsubtypeID=36
+ 
+INSERT INTO #ConsortiumExistingBibs (BRID, OwningBranchID)
+SELECT DISTINCT cir.AssociatedBibRecordID, cir.AssignedBranchID
+FROM Polaris.Polaris.CircItemRecords cir (nolock)
+WHERE RecordStatusID=1 and ItemStatusID in (1,2)        --May need to adjust this; report is designed to 
+--only include items with circ status of ‘In’ or ‘Out’, with record status of ‘Final’
+ 
+UPDATE #ConsortiumTransits
+SET #ConsortiumTransits.TranLinkedBib=( SELECT #ConsortiumTranBibs.TranBibID
+FROM #ConsortiumTranBibs
+WHERE #ConsortiumTranBibs.TransactNum=#ConsortiumTransits.TranNum) 
+ 
+UPDATE #ConsortiumTransits
+SET #ConsortiumTransits.RecvLibID=( SELECT #ConsortiumReceivingLibrary.ReceivingLibID
+FROM #ConsortiumReceivingLibrary
+WHERE #ConsortiumReceivingLibrary.TransNum=#ConsortiumTransits.TranNum)
+ 
+UPDATE #ConsortiumTransits
+SET #ConsortiumTransits.ExistingBibID=( SELECT #ConsortiumExistingBibs.BRID
+FROM #ConsortiumExistingBibs
+WHERE #ConsortiumTransits.TranLinkedBib=#ConsortiumExistingBibs.BRID and #ConsortiumTransits.RecvLibID=#ConsortiumExistingBibs.OwningBranchID) 
+ 
+select org.name as SendingLibrary, orgn.name as ReceivingLibrary, count(#ConsortiumTransits.TranNum) as NumberSent
+from #ConsortiumTransits (nolock)
+left join polaris.polaris.organizations org (nolock) on #ConsortiumTransits.SendLibID = org.organizationid
+left join polaris.polaris.organizations orgn (nolock) on #ConsortiumTransits.RecvLibID = orgn.organizationid
+where #ConsortiumTransits.ExistingBibID is null
+Group by org.name, orgn.name
+order by org.name
+ 
+drop table #ConsortiumTransits
+drop table #ConsortiumExistingBibs
+drop table #ConsortiumReceivingLibrary
+drop table #ConsortiumTranBibs

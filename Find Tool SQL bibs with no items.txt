@@ -1,0 +1,8 @@
+SELECT BibliographicRecordID as "RecordID"
+FROM BibliographicRecords WITH (NOLOCK)
+WHERE RecordStatusID = 1
+AND BibliographicRecordID NOT IN
+(SELECT AssociatedBibRecordID FROM CircItemRecords WITH (NOLOCK))
+
+
+

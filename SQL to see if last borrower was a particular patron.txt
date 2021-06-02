@@ -1,0 +1,3 @@
+Select CIR.itemrecordid AS RecordID
+FROM Polaris.circitemrecords CIR
+where CIR.lastusepatronid = 18240

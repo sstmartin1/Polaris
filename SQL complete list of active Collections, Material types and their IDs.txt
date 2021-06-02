@@ -1,0 +1,10 @@
+Since the number of Collections can vary by OrganizationID if your System is setup to display just the Collections each branch wants to use or see.  The SQL Query below allows you to limit based on 
+OrganizationID.  For us our OrganizationID (3 = System Branch) sees all of the Collections.  Change the ID as needed.
+ 
+SELECT C.CollectionID, C.Abbreviation, C.Name, OC.OrganizationID, O.Abbreviation
+FROM Collections C
+JOIN OrganizationsCollections OC
+ON OC.CollectionID = C.CollectionID
+JOIN Organizations O
+ON O.OrganizationID = OC.OrganizationID
+WHERE OC.OrganizationID = 3

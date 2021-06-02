@@ -1,0 +1,13 @@
+declare @dtBeginDate datetime,
+      @dtEndDate datetime
+      
+select @dtBeginDate = '12/1/2011 00:00:00'  select @dtEndDate = '12/31/2011 23:59:59'
+ 
+select o.Name,
+      isnull(psc.Description,'<none>') as StatisticalClass,
+      count(distinct th.transactionid) as Total
+      
+from PolarisTransactions.polaris.TransactionHeaders th with (nolock) inner join polaris.polaris.Organizations o with (nolock) on (th.OrganizationID = o.OrganizationID) left outer join polaristransactions.polaris.TransactionDetails td with (nolock) on (th.TransactionID = td.TransactionID and td.TransactionSubTypeID = 33) left outer join polaris.polaris.PatronStatClassCodes psc with (nolock) on (td.numValue = psc.StatisticalClassID) where th.TransactionTypeID = 6001 and th.TranClientDate between @dtBeginDate and @dtEndDate group by o.Name,
+      isnull(psc.Description,'<none>')
+order by o.Name, isnull(psc.Description,'<none>')
+ 

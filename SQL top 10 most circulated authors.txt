@@ -1,0 +1,29 @@
+You will probably need to change your collection id, statistical code id, and dates, and maybe your assigned branch id.  There are a couple of caveats with this query.  
+ 
+1) The 100 tag in all of your MARC records must match exactly, including punctuation and spaces.  We had to do quite a bit of bib record and authority record cleanup before we got a report we could trust.  
+ 
+2) If there are authors with the same number of circulations at the tail end of the report, they will order randomly each time you run the report.  Actually, I’m sure it’s not random but I haven’t invested the time to see what the order is.  That wasn’t a big deal for us, but if you want to make sure there are no ties being excluded, you could change the first part of the statement to something like “SELECT top 20.”
+ 
+select top 10 br.browseauthor as Author, 
+count(th.Transactionid) as Circs
+from PolarisTransactions.Polaris.TransactionHeaders TH (nolock)
+JOIN PolarisTransactions.Polaris.TransactionDetails TD (nolock)
+on th.Transactionid = td.transactionid
+JOIN Polaris.CircItemRecords CIR (nolock)
+on CIR.ItemRecordID=TD.numvalue
+JOIN Polaris.bibliographicrecords br (nolock)
+on CIR.AssociatedBibRecordID=BR.BibliographicRecordID
+where th.transactiontypeid=6001 
+and td.transactionsubtypeid=38 
+and th.transactiondate > '10-01-2010'
+and th.transactiondate < '10-1-2011'
+and cir.assignedbranchid=3
+and cir.assignedcollectionid=42
+and cir.statisticalcodeid=307
+and br.browseauthor is not null
+group by br.browseauthor
+order by count(th.Transactionid) DESC
+
+
+
+Let me restate caveat 1, after reading it again.  For all of the circulations by a single author to be counted together, the 100 tag in all of the MARC records for that author’s books must match exactly, including punctuation and spaces.  That will cause ranking problems for authors who insist on being difficult and using pseudonyms that are also LC authorized authority headings.  For instance, Nora Roberts and J.D. Robb will be counted as two separate authors.  We had to do quite a bit of bib record and authority record cleanup before we got a report we could trust.

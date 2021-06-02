@@ -1,0 +1,56 @@
+Forum Post:
+This information is some of the "tricky" data that SimplyReports tends to avoid, as pulling data from the subfields in a MARC record involves a lot of table joins in Polaris.  In addition, the publisher can be in the 260 OR the 264, depending on how progressive your library has been about RDA cataloging.  Below is the SQL query I use for a report of recently added titles for some of our libraries.   I'm not sure what would happen if there were multiple instances of the particular field we were searching, but that worry isn't important in this case.
+
+
+
+
+
+SELECT br.BrowseTitle AS [Title], ird.CallNumberVolumeCopy AS [CallNumber], br.BrowseAuthor AS [Author], br.PublicationYear,
+
+--I'm using a case to make sure I get a single publisher no matter where it is located
+
+ CASE WHEN bs2.Data IS NULL THEN bs1.Data ELSE bs2.Data END AS [Publisher],
+
+  mt.Description AS [MaterialType], CONVERT(VARCHAR(12), ird.CreationDate, 101) AS [Linked Date]
+
+FROM Polaris.Polaris.CircItemRecords AS [cir] WITH (NOLOCK)
+
+INNER JOIN Polaris.Polaris.ItemRecordDetails AS [ird] WITH (NOLOCK)
+
+ON cir.ItemRecordID = ird.ItemRecordID
+
+INNER JOIN Polaris.Polaris.BibliographicRecords AS [br] WITH (NOLOCK)
+
+ON cir.AssociatedBibRecordID = br.BibliographicRecordID
+
+INNER JOIN Polaris.Polaris.MaterialTypes AS [mt] WITH (NOLOCK)
+
+ON cir.MaterialTypeID = mt.MaterialTypeID
+
+INNER JOIN Polaris.Polaris.Organizations AS [o] WITH (NOLOCK)
+
+ON cir.AssignedBranchID = o.OrganizationID
+
+--AACR2 publisher information
+
+LEFT OUTER JOIN Polaris.Polaris.BibliographicTags AS [bt1] WITH (NOLOCK)
+
+ON br.BibliographicRecordID = bt1.BibliographicRecordID AND bt1.TagNumber = '260'
+
+LEFT OUTER JOIN Polaris.Polaris.BibliographicSubfields AS [bs1] WITH (NOLOCK)
+
+ON bt1.BibliographicTagID = bs1.BibliographicTagID AND bs1.Subfield = 'b'
+
+--RDA publisher information
+
+LEFT OUTER JOIN Polaris.Polaris.BibliographicTags AS [bt2] WITH (NOLOCK)
+
+ON br.BibliographicRecordID = bt2.BibliographicRecordID AND bt2.TagNumber = '264'
+
+LEFT OUTER JOIN Polaris.Polaris.BibliographicSubfields AS [bs2] WITH (NOLOCK)
+
+ON bt2.BibliographicTagID = bs2.BibliographicTagID AND bs2.Subfield = 'b'
+
+WHERE o.OrganizationID = 'XXX'
+
+AND ird.CreationDate > '01/01/2013'

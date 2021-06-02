@@ -1,0 +1,6 @@
+I’m not sure of the format you want this information outputted to but here is a down and dirty SQL Query that returns your BibliographicRecordID, TagNumber, and the Data for those tags as long as they are a 20, 22 or24 and the BibRecord doesn’t have a Deleted RecordStatusID.
+
+select b.bibliographicrecordid, bt.tagnumber, bs.data from bibliographicrecords b join bibliographictags bt on b.bibliographicrecordid = bt.bibliographicrecordid join bibliographicsubfields bs on bt.bibliographictagid = bs.bibliographictagid where b.recordstatusid <> 4 and bt.tagnumber in (20,22,24) and bs.subfield = 'a'
+order by b.bibliographicrecordid
+
+

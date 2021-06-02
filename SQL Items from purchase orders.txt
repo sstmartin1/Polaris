@@ -1,0 +1,10 @@
+I went ahead and revised the ‘Items from Invoices’ report for purchase orders…you would just replace the 387 with your purchase order id or the = 387 with an IN statement for multiple POs.
+ 
+SELECT PO.PONumber, IR.Barcode, BR.BrowseTitle
+FROM Polaris.PurchaseOrders AS PO with (nolock)
+JOIN Polaris.POLines POL with (nolock) ON PO.PurchaseOrderID = POL.PurchaseOrderID
+JOIN Polaris.POLineItemSegments POLIS with (nolock) ON ((PO.PurchaseOrderID = POLIS.PurchaseOrderID) AND (POL.POLineItemID = POLIS.POLineItemID))
+JOIN Polaris.LineItemSegmentToItemRecord LISIR with (nolock) ON POLIS.POLineItemSegmentID = LISIR.POLineItemSegmentID
+JOIN Polaris.ItemRecords IR with (nolock) ON LISIR.ItemRecordID = IR.ItemRecordID
+JOIN Polaris.BibliographicRecords BR with (nolock) ON IR.AssociatedBibRecordID = BR.BibliographicRecordID
+WHERE PO.PurchaseOrderID=387

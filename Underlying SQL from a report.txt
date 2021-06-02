@@ -1,0 +1,12 @@
+Polaris actually suggests that you use a custom stored procedure instead of just embedding the SQL code within the RDL itself.  You should create a new one based off of their stored procedure and then label them consistently and document their existence so you can check them again after an upgrade.  We label our custom stored procedures CLC_Custom_Rpt_ReportName (CLC is the name of our organization).
+ 
+You can easily copy their existing Stored Procedure in SQL Server Management Studio but right clicking on their stored procedure, selecting “Script Stored Procedure as” -> “Create To” -> “New Query Window”.  The existing code will be copied into a new query window, from there you can change the stored procedure name (the name is listed after the phrase CREATE PROCEDURE).  When you click on Execute after adding in your column name, the system will now create a new stored procedure in the database with your customized code using your new name.  This name is what should be referenced within Report Builder or Visual Studio when you’re customizing the rest of the report layout.
+ 
+To make a change to this custom stored procedure in the future, you’ll need to either drop and re-create your CUSTOM stored procedure or use the ALTER command.  You should always keep a separate copy of your stored procedure code that you’ve developed in case a Polaris upgrade wipes out your custom stored procedures for some reason you’ll be able to recover them.
+ 
+I did a presentation on reporting services this past year at PUG where I covered several ways to customize your reports including why you should custom stored procedures for your reports.  The presentation can be downloaded from the “Files” area of the PUG website (OSBORN_SQL_Server_Reporting_ServicesSSRS.pdf).
+ 
+Wes Osborn
+System Administrator
+
+

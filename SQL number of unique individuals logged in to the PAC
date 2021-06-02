@@ -1,0 +1,19 @@
+
+/*Here's what I use at the beginning of each month Just change the dates and you're good to go.
+PAC statistics within a date range
+Uses transactions database*/
+
+SELECT
+ty.TransactionTypeDescription, th.TransactionDate AS 'Login' FROM polaris.polaris.TransactionHeaders th (NOLOCK)
+JOIN
+polaris.polaris.TransactionDetails td (NOLOCK)
+ON
+td.TransactionID = th.TransactionID
+JOIN
+polaris.polaris.Patrons p (NOLOCK)
+ON
+td.numValue = p.PatronID
+join
+Polaris.Polaris.ViewTransactionTypes ty on ty.TransactionTypeID= th.TransactionTypeID
+WHERE
+th.TransactionTypeID = '2200' and p.barcode = 'your barcode'

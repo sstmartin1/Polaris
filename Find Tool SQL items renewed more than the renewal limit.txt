@@ -1,0 +1,7 @@
+You could run this SQL query from the Item Find Tool which would give you a list of items that have been renewed more than the renewal limit:
+
+SELECT ItemRecordID AS RecordID
+FROM CircItemRecords CIR WITH (NOLOCK)
+JOIN ItemCheckouts IC (WITH (NOLOCK)
+ON CIR.ItemRecordID = IC.ItemRecordID
+WHERE IC.Renewal >  CIR.RenewalLimit

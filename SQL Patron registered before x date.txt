@@ -1,0 +1,5 @@
+SELECT PA.PatronID as RecordId 
+FROM Polaris.Patrons as PA (NOLOCK) 
+JOIN Polaris.PatronRegistration as PR (NOLOCK) ON PA.PatronID=PR.PatronID 
+WHERE left(Barcode,6) = 'PACREG' 
+AND RegistrationDate <= dateadd(dd,-7,getdate())

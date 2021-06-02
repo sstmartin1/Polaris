@@ -1,0 +1,16 @@
+Here is the Find Tool query I use to create record sets of expired patrons.  Staff at the branches are then responsible for deleting the patrons.
+-- set find tool to export results to record set
+-- give record set a name and increase the record limit
+-- change the orgid to refelct the correct branch
+-- make sure the record set reflects correct ownership
+-- adjust expiration date
+ 
+select PR.Patronid as RecordId  from Patrons P (nolock)
+inner join PatronRegistration PR (nolock)
+on (PR.PatronID=P.PatronID)
+where PR.ExpirationDate < '2006-12-31'
+and P.LostItemCount=0
+and P.ChargesAmount=0
+and p.organizationid=3
+and P.patronID NOT IN
+(SELECT patronID FROM ItemCheckouts)

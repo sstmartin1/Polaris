@@ -1,0 +1,35 @@
+Here’s a tricky little bit of business I’ve been working on this week, and I think I finally got it figured out.  I hope you enjoy using it as much as I enjoyed writing it.  This is an extension of a location-to-location Holds Shipped report for a consortium to be run against the PolarisTransactions database.  Rather than simply giving the number of holds shipped from one location to another, it gives the number of holds shipped where the receiving library does not have any items that are ‘In’ or ‘Out’ with a record status of ‘Final’ attached to the same bib record as the item being shipped.  Of course, circulation statuses and record statuses could easily be added to that parameter mix.
+ 
+I encourage you to use this report…modify and evaluate it (I’m still not entirely sure it’s error-free), and post to the list if you find any errors or helpful improvements.  Also, can anyone point out to me how to incorporate temporary tables into Visual Studio 2005?
+--
+CREATE TABLE #ConsortiumTransits
+(TranLinkedBib int,
+TranNum int,
+SendLibID int,
+RecvLibID int,
+TranItemNum int,
+ExistingBibID int)
+ 
+CREATE TABLE #ConsortiumExistingBibs
+(BRID int,
+OwningBranchID int)
+ 
+CREATE TABLE #ConsortiumReceivingLibrary
+(TransNum int,
+ ReceivingLibID int)
+ 
+If you only need the table to last for file scope (i.e., until the last SQL statement in your report finishes), you can just declare one as a variable, like this:
+
+DECLARE @TEMPTABLE TABLE (
+   fieldone   SOMEDATATYPE,
+   fieldtwo   ANOTHERDATATYPE,
+   fieldthree INTEGER,
+   fieldfour  DATETIME);
+   
+INSERT INTO @TEMPTABLE (fieldone, fieldfour) SELECT fieldone, fieldfour
+FROM   Polaris.SomeTable
+WHERE  someotherfield [meets some criterion];
+
+... other SQL statements go here ...
+
+SELECT * FROM @TEMPTABLE;

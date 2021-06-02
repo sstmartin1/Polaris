@@ -1,0 +1,31 @@
+I’ve been working on this Bibliographic Record Find Tool SQL query (Polaris Version 4.0.339) off and on over the past couple of days and I think I’ve finally nailed it down.  Could everyone please give it a whirl and see if they notice any problems with it?  What the query is designed to do is count all of the checkouts in a given date range for all of the items attached to a bib record, put bib records in order from most circulated to least circulated and then return the top 10 results.  If there’s a tie for the number of checkouts, the tiebreaker is the lifetime circulation count.  I also included the parameters for item associated branch (cir.assignedbranchid) , item collection code (cir.assignedcollectionid), and item statistical code (cir.statisticalcodeid), but you can take those out or modify them as they apply to your situation:
+ 
+SELECT BR.BibliographicRecordID as RecordID
+from bibliographicrecords br (nolock)
+where br.bibliographicrecordID in
+(select top 10 cir.associatedbibrecordid 
+from PolarisTransactions.Polaris.TransactionHeaders TH (nolock)
+JOIN PolarisTransactions.Polaris.TransactionDetails TD (nolock)
+on th.Transactionid = td.transactionid
+JOIN Polaris.CircItemRecords CIR (nolock)
+on CIR.ItemRecordID=TD.numvalue
+JOIN Polaris.bibliographicrecords br (nolock)
+on CIR.AssociatedBibRecordID=BR.BibliographicRecordID
+where th.transactiontypeid=6001 
+and td.transactionsubtypeid=38 
+and th.transactiondate > '03-01-2011'
+and th.transactiondate < '04-01-2011'
+and cir.assignedbranchid=9
+and cir.assignedcollectionid=6
+and cir.statisticalcodeid=110
+group by cir.associatedbibrecordid, br.browsetitle, br.browseauthor, BR.LifetimeCircCount
+order by count(th.Transactionid) DESC, BR.LifetimeCircCount DESC)
+ 
+I know there’s a Polaris stored procedure that counts popularity for the Library Journal ‘Most Popular’ lists, but I believe it counts both holds and circs over the past 60 days, if I’m reading the stored procedure right--and, to be honest, I really only glanced over it… With this query, though, you can adjust the time period for whatever time frame you want.
+ 
+If this seems to work for everyone, then I will post it to the Extranet.
+
+
+
+
+

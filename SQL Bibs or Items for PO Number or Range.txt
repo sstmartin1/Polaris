@@ -1,0 +1,13 @@
+SELECT INV.InvNumber, IR.Barcode, BR.BrowseTitle
+FROM Polaris.Invoices AS INV with (nolock)
+JOIN Polaris.InvLines INVL with (nolock) ON INV.InvoiceID = INVL.InvoiceID
+JOIN Polaris.InvLineItemSegments ILIS with (nolock) ON ((INV.InvoiceID = ILIS.InvoiceID) AND (INVL.InvLineItemID = ILIS.InvLineItemID))
+JOIN Polaris.LineItemSegmentToItemRecord LISIR with (nolock) ON ILIS.InvLineItemSegmentID = LISIR.InvLineItemSegmentID
+JOIN Polaris.ItemRecords IR with (nolock) ON LISIR.ItemRecordID = IR.ItemRecordID
+JOIN Polaris.BibliographicRecords BR with (nolock) ON IR.AssociatedBibRecordID = BR.BibliographicRecordID
+WHERE INV.InvoiceID=1653
+
+
+
+
+

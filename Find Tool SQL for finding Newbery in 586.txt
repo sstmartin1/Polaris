@@ -1,0 +1,4 @@
+Select DISTINCT BR.BibliographicRecordID as RecordID
+FROM BibliographicRecords BR with (nolock) join BibliographicTagsAndSubfields_View BT with (nolock) on BR.BibliographicRecordID=BT.BibliographicRecordID
+WHERE BT.Data like '%Newbery%' and BT.TagNumber=586
+

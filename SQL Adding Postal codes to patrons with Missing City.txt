@@ -1,0 +1,48 @@
+I think the two Querys below will do what you want.  The first one I ran the to find the PostalCodeIDs and the corresponding PostalCode, City and Country. The second I used to update the PostalCodeID for patrons and limits the update to those patrons in a specific recordset and where the address has the 99999 Missing City listed (PostalCodeID = 0).  
+ 
+ 
+ 
+Daniel Heaton
+Systems and Technical Services Manager
+Jefferson County Library
+360-385-6544
+dheaton@jclibrary.info
+www.jclibrary.info
+ 
+ 
+/*
+Query #1 to list PostalCodeIds and corresponding PostalCodes, City State info
+*/
+SELECT * FROM Polaris.PostalCodes PC with(nolock)
+ORDER BY PC.PostalCodeID
+ 
+ 
+ 
+/*
+Query #2 used to update patron address PostalCodes where patrons are all in a specific recordset
+*/
+ 
+USE Polaris
+ 
+/*Polaris Addresses Table contains the PostalCode Column */
+UPDATE Polaris.Addresses      
+ 
+/*Column to update Replace number with the PostalcodeID you want*/
+SET  PostalCodeID = 51651
+ 
+/*
+These 3 tables, PatronAddresses, PatronRecordsets and Addresses need joined to get to the postalcode 
+and make sure only those records in a specific recordset are changed
+*/ 
+ 
+FROM Polaris.PatronAddresses PA
+INNER JOIN Polaris.PatronRecordSets PRS with(nolock)
+ON PRS.PatronID = PA.PatronID
+INNER JOIN Polaris.Addresses AD with(Nolock)
+ON PA.AddressID = AD.AddressID
+ 
+WHERE PRS.RecordSetID = 150  -- Patron RecordsetID
+ 
+/* 0 is the PostalCodeID for the 99999 postalcode and MissingCity if you don’t limit this all addresses on a patrons record will be changed*/
+AND AD.PostalCodeID = 0 
+ 

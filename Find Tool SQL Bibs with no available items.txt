@@ -1,0 +1,8 @@
+If you need to retrieve all of the bibs with NO “available” items, use this:
+ 
+SELECT BR.BibliographicRecordID as RecordID
+FROM BibliographicRecords BR WITH (NOLOCK) 
+WHERE BR.BibliographicRecordID not in (SELECT BR.BibliographicRecordID as RecordID
+FROM BibliographicRecords BR WITH (NOLOCK) LEFT JOIN CircItemRecords CIR ON BR.BibliographicRecordID = CIR.AssociatedBibRecordID
+WHERE CIR.ItemStatusID in (1,2,3,4,5,6,8,9,12,13,14,15,18))
+

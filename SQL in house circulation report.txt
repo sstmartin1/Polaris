@@ -1,0 +1,7 @@
+USE PolarisTransactions
+SELECT count(td.TransactionSubTypeID) as InHouseCircs FROM Polaris.TransactionDetails td (nolock) JOIN Polaris.TransactionHeaders th (nolock) ON td.TransactionID = th.TransactionID WHERE th.TransactionTypeID=6002 and
+td.TransactionSubTypeID=128 and
+td.numValue=6 and
+th.TransactionDate > '9/1/2010' and
+th.TransactionDate
+th.OrganizationID=3

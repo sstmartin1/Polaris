@@ -1,0 +1,26 @@
+Ruth, fortunately I have addressed this issue for our library and can provide these bib record SQL searches for you:
+ 
+Incorrect ‘A’:
+Select DISTINCT BR.BibliographicRecordID as RecordID
+FROM BibliographicRecords BR with (nolock) join BibliographicTagsAndSubfields_View BT with (nolock) on BR.BibliographicRecordID=BT.BibliographicRecordID
+WHERE BR.BrowseTitle like 'A %' and BT.IndicatorTwo <>2 and BT.TagNumber=245
+ 
+Incorrect ‘An’:
+Select DISTINCT BR.BibliographicRecordID as RecordID
+FROM BibliographicRecords BR with (nolock) join BibliographicTagsAndSubfields_View BT with (nolock) on BR.BibliographicRecordID=BT.BibliographicRecordID
+WHERE BR.BrowseTitle like 'An %' and BT.IndicatorTwo <>3 and BT.TagNumber=245
+ 
+Incorrect ‘The’:
+Select DISTINCT BR.BibliographicRecordID as RecordID
+FROM BibliographicRecords BR with (nolock) join BibliographicTagsAndSubfields_View BT with (nolock) on BR.BibliographicRecordID=BT.BibliographicRecordID
+WHERE BR.BrowseTitle like 'The %' and BT.IndicatorTwo <>4
+ 
+The results need to be checked manually and not automatically corrected as a batch because titles like _A is for Alibi_ should have a 245 indicator two value of ‘0’.  In the most recent build of Polaris (and I don’t know when they added this) there is a bibliographic record bulk change option of ‘Correct non-filing indicator values (initial articles ‘a’, ‘an’ or ‘the’)’.  It seems to automatically detect the correct indicator value and fix it for you.
+
+I would like to follow up with an edit and an additional line for these SQL Queries.  The last query for the “Incorrect ‘The’” needs to have the and BT.TagNumber=245 added to it for it to work correctly.
+ 
+Also, we retain our deleted Bibs for 1 year so for us I would add the following line to the end so the deleted bibs aren’t selected: 
+and BR.RecordStatusID <> 4
+ 
+These are very helpful Chris,
+

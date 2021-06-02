@@ -1,0 +1,21 @@
+Here is an Item Record Find Tool Search that should do what you’re asking:
+ 
+SELECT DISTINCT CIR.ItemRecordID as RecordID
+FROM
+    Polaris.SysHoldRequests SHR (NOLOCK)
+    JOIN Polaris.POLines POL (NOLOCK) ON
+        POL.BibliographicRecordID = SHR.BibliographicRecordID
+    JOIN Polaris.BibliographicRecords BR (NOLOCK) ON
+        BR.BibliographicRecordID = SHR.BibliographicRecordID
+    JOIN Polaris.CircItemRecords CIR (NOLOCK) ON           
+        SHR.BibliographicRecordID = CIR.AssociatedBibRecordID AND (CIR.ItemStatusID = 13)
+    JOIN Polaris.Organizations ORG (NOLOCK) ON  
+        ORG.OrganizationID = CIR.AssignedBranchID  
+WHERE
+            SHR.SysHoldStatusID = 3    
+            and CIR.AssignedBranchID=3
+ 
+You can change the CIR.AssignedBranchID in the WHERE clause to suit your needs.  The SHR.SysHoldStatusID parameter in the WHERE clause is there so that you only find items that have Active holds.
+ 
+
+

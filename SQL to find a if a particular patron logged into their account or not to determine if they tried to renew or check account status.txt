@@ -1,0 +1,3 @@
+use polaristransactions
+declare @patronid int
+set @patronid = '61671' --enter the patronid between the single quotes select * from transactionheaders th with (nolock) join transactiondetails td with (nolock) on td.transactionid = th.transactionid where transactiontypeid = 2200 --this is the transactiontypeid for PAC Patron Logon and th.tranclientdate > getdate()-60 --this returns info for the last 60 days and td.transactionsubtypeid = 6 --this is the transactionsubtypeid for patronid and td.numvalue = @patronid --this field contains the numeric patronid

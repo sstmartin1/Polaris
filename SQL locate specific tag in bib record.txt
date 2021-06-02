@@ -1,0 +1,11 @@
+select *
+
+-- Change tag number, subfield and data
+
+FROM         Polaris.BibliographicRecords INNER JOIN
+                      Polaris.BibliographicTags ON Polaris.BibliographicRecords.BibliographicRecordID = Polaris.BibliographicTags.BibliographicRecordID INNER JOIN
+                      Polaris.BibliographicSubfields ON Polaris.BibliographicTags.BibliographicTagID = Polaris.BibliographicSubfields.BibliographicTagID 
+WHERE     (Polaris.BibliographicTags.TagNumber = TAG) AND (Polaris.BibliographicSubfields.Subfield = 'SUBFIELD') AND (Polaris.BibliographicSubfields.Data Like '%DATA%')
+
+ 
+

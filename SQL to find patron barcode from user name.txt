@@ -1,0 +1,6 @@
+SELECT pr.NameLast, pr.NameFirst, p.Barcode
+FROM PatronRegistration pr 
+JOIN Patrons p
+ON (pr.PatronID = p.PatronID)
+WHERE pr.Username = ‘username_here’
+

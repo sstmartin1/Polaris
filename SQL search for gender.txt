@@ -1,0 +1,9 @@
+gender = 'f' [female]
+gender = 'm' [male]
+gender = 'n' [no response] – for records that are left blank, we have than we would like of these.
+ 
+
+ 
+It is possible.  The documentation doesn’t list a CCL code for gender, so you’d have to do a SQL search like:
+ 
+SELECT PR.PatronID AS RecordID FROM PatronRegistration PR (NOLOCK) WHERE PR.gender = 'f'

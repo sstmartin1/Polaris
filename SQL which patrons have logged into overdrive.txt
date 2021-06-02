@@ -1,0 +1,21 @@
+And here is a SQL script to use the data in the output file to see which of your patrons logged in to OverDrive and how many times they did so throughout the time period.  This will not match the Content Reserve patron activity report, as that tracks unique patrons with checkouts (not just logins).  I might use the contents of the email address fields to, for instance, send notifications to patrons when OverDrive adds features like Kindle compatibility or when we place a new Advantage order.
+ 
+CREATE TABLE #OverDrivePatrons
+(patronbc char(13),
+      ODLoginDate date,
+      ODLoginTime time)
+ 
+BULK INSERT #OverDrivePatrons
+FROM 'c:\ProgramData\Polaris\4.0\Logs\ParsedSIP2.txt'
+  WITH
+  (FIELDTERMINATOR = ',')
+GO
+ 
+Select patronbc, P.OrganizationID, PR.PatronFirstLastName, COUNT(patronbc) as OverDriveLogins, PR.EmailAddress
+from #OverDrivePatrons
+JOIN Polaris.Patrons P with (nolock) on P.Barcode=#OverDrivePatrons.patronbc
+JOIN Polaris.PatronRegistration PR with (nolock) on P.PatronID=PR.PatronID
+GROUP BY patronbc, P.OrganizationID, PR.PatronFirstLastName, PR.EmailAddress
+ORDER BY OverDriveLogins
+ 
+drop table #OverDrivePatrons

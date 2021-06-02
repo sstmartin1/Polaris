@@ -1,0 +1,3 @@
+Below is a SQL Query that you could use if you have access to SQL Management Studio:
+
+SELECT P.Barcode, PR.PatronFirstLastName, B.BrowseTitle, IC.OriginalCheckOutDate, IC.Renewals AS "Renewal Taken" ,CIR.RenewalLimit FROM CircItemRecords CIR WITH (NOLOCK) JOIN ItemCheckouts IC WITH (NOLOCK) ON CIR.ItemRecordID = IC.ItemRecordID JOIN BiblioGraphicRecords B WITH (NOLOCK) ON B.BibliographicRecordID = CIR.AssociatedBibRecordID JOIN PatronRegistration PR WITH (NOLOCK) ON PR.PatronID = IC.PatronID JOIN Patrons P WITH (NOLOCK) ON P.PatronID = PR.PatronID WHERE IC.Renewals >  CIR.RenewalLimit ORDER BY CIR.RenewalLimit, IC.Renewals, IC.OriginalCheckOutDate

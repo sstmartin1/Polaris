@@ -1,0 +1,80 @@
+Some of you may be curious about the SQL I use to automatically modify patron record sets, so I am providing this example, with no warranty or guarantee that it will not make your database explode if you try it, and therefore with any and all possible or imaginable disclaimers of liability (either existing now, or possible or imaginable in the future, or in the event that backward time travel is ever invented, possible or imaginable in the past) implied.  
+ 
+I wrote this because one of our libraries wanted a record set on the first of each month that had all of their deletable patron accounts in it, based on criteria they defined which included whether the patron owed money, had lost items, had a set inactivity time period, had an associated child’s account, etc..  
+ 
+Then they wanted a report to be automatically emailed to them on the same day based on this record set, which can be accomplished through SQL Server Reporting Services.  Wes Osborn did a presentation on SQL Server Reporting Services and scheduling reports at the most recent PUG Conference.  
+ 
+Anyway, here is the SQL.  Note the complete lack of documentation.  Bad programmer!  I created a job in SQL Server Agent in SQL Server Management Studio to run this code at 12:30 AM on the first day of every month.
+
+
+
+
+CREATE TABLE #OutstandingRPDcharges
+(patron int,
+sumcharges money,
+sumpayments money,
+sumoutstanding money)
+ 
+CREATE TABLE #OutstandingRPDpayments
+(patronIDnum int,
+sumpmts money)
+ 
+CREATE TABLE #DeletablePatronAccts
+(RSID int,
+PID int,
+ChPat int,
+AssocChildPat int)
+ 
+CREATE TABLE #HasAssociatedChild
+(ACpatronID int)
+ 
+INSERT INTO #OutstandingRPDcharges (patron, sumcharges)
+SELECT   pa.patronid, sum(txnamount)
+FROM Polaris.PatronAccount pa with (nolock)
+WHERE txncodeid=1 and feereasoncodeid in (-1,-6,1,2,4,6)
+GROUP BY pa.patronid
+ 
+INSERT INTO #OutstandingRPDpayments (patronIDnum, sumpmts)
+SELECT   pa.patronid, sum(txnamount)
+FROM Polaris.PatronAccount pa with (nolock)
+WHERE txncodeid=2 and feereasoncodeid in (-1,-6,1,2,4,6)
+GROUP BY pa.patronid
+ 
+INSERT INTO #HasAssociatedChild
+SELECT pa.patronid from polaris.patronassociations pa with (nolock)
+JOIN Polaris.Patrons p with (nolock) on p.patronid=pa.linkedpatronid
+WHERE p.patroncodeid in (2,3,11,12)
+ 
+UPDATE #OutstandingRPDcharges
+SET #OutstandingRPDcharges.sumpayments=(
+SELECT #OutstandingRPDpayments.sumpmts
+FROM #OutstandingRPDpayments
+WHERE #OutstandingRPDpayments.patronIDnum=#OutstandingRPDcharges.patron)
+ 
+UPDATE #OutstandingRPDcharges
+SET #OutstandingRPDcharges.sumpayments=0.00
+WHERE #OutstandingRPDcharges.sumpayments IS NULL
+ 
+UPDATE #OutstandingRPDcharges
+SET #OutstandingRPDcharges.sumoutstanding=#OutstandingRPDcharges.sumcharges-#OutstandingRPDcharges.sumpayments
+ 
+Select * from #OutstandingRPDcharges
+where sumoutstanding > 0
+ 
+INSERT INTO #DeletablePatronAccts (RSID,PID,ChPat,AssocChildPat)
+(SELECT 4416,PR.PatronID,#OutstandingRPDcharges.patron as ChargedPatrons,#HasAssociatedChild.ACpatronID as AssocChildPat
+from Polaris.PatronRegistration PR WITH (NOLOCK)
+JOIN Polaris.Patrons P on PR.PatronID=P.PatronID
+LEFT JOIN #OutstandingRPDcharges on PR.PatronID=#OutstandingRPDcharges.patron
+LEFT JOIN #HasAssociatedChild on PR.PatronID=#HasAssociatedChild.ACpatronID
+WHERE PR.ExpirationDate < getdate() and P.LastActivityDate < getdate()-730 and P.OrganizationID=9 and PR.DeletionExempt=0 and P.LostItemCount < 1)
+ 
+INSERT INTO Polaris.PatronRecordSets (RecordSetID,PatronID)
+SELECT RSID, PID
+FROM #DeletablePatronAccts
+WHERE (ChPat IS NULL and AssocChildPat is NULL)
+ 
+drop table #OutstandingRPDcharges
+drop table #OutstandingRPDpayments
+drop table #DeletablePatronAccts
+drop table #HasAssociatedChild

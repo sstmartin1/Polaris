@@ -1,0 +1,13 @@
+SELECT
+   concat(left(IRD.CallNumber, patindex('%[0-9][0-9][0-9]%', IRD.CallNumber)), 'xx') as Call,
+   sum(CIR.YTDCircCount) as YTDCirc
+FROM
+  polaris.ItemRecordDetails IRD
+JOIN
+  polaris.CircItemRecords CIR ON CIR.ItemRecordID = IRD.ItemRecordID
+WHERE
+  IRD.CallNumber like '%[0-9][0-9][0-9]%'
+GROUP BY
+  concat(left(IRD.CallNumber, patindex('%[0-9][0-9][0-9]%', IRD.CallNumber)), 'xx')
+ORDER BY
+  concat(left(IRD.CallNumber, patindex('%[0-9][0-9][0-9]%', IRD.CallNumber)), 'xx');

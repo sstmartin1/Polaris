@@ -1,0 +1,34 @@
+I have an Visual Studio 2005 .rdl file that I will post to the Extranet “Items to Process ASAP—Holds.rdl.  I set up a subscription to this report to be emailed to my catalogers every weekday.  Here’s the SQL for it.  
+---
+SELECT
+    SHR.BibliographicRecordID,
+    BR.BrowseTitle,
+    BR.BrowseAuthor,
+    TOM.Description AS Format,
+    MAX(POL.StatusDate)as ReceiptDate,
+    COUNT(DISTINCT SysHoldRequestID) AS Holds,  
+    ORG.Name AS Organization,
+                CIR.ItemStatusID
+FROM
+    Polaris.SysHoldRequests SHR (NOLOCK)
+    JOIN Polaris.POLines POL (NOLOCK) ON
+        POL.BibliographicRecordID = SHR.BibliographicRecordID
+    JOIN Polaris.BibliographicRecords BR (NOLOCK) ON
+        BR.BibliographicRecordID = SHR.BibliographicRecordID
+    JOIN Polaris.MARCTypeofMaterial TOM (NOLOCK) ON
+        TOM.MARCTypeofMaterialID = BR.PrimaryMARCTOMID
+    JOIN Polaris.CircItemRecords CIR (NOLOCK) ON            -- must have items in-process
+        SHR.BibliographicRecordID = CIR.AssociatedBibRecordID AND (CIR.ItemStatusID = 15)
+    JOIN Polaris.Organizations ORG (NOLOCK) ON  
+        ORG.OrganizationID = CIR.AssignedBranchID  
+WHERE
+                SHR.SysHoldStatusID = 3               -- Holds must be Active
+                and CIR.AssignedBranchID=@Library
+GROUP BY
+    SHR.BibliographicRecordID,
+    BR.BrowseTitle,
+    BR.BrowseAuthor,
+    TOM.Description,  
+    ORG.Name,
+    CIR.ItemStatusID
+ORDER BY Holds DESC, ReceiptDate

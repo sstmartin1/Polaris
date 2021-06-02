@@ -1,0 +1,13 @@
+USE PolarisTransactions
+select DISTINCT td.numValue as PatronID, pr.PatronFullName, p.ChargesAmount
+from polaris.transactionheaders th with(nolock) 
+left join polaris.transactiondetails td with(nolock) on th.Transactionid = td.transactionid
+JOIN Polaris.Polaris.Patrons P with(nolock)
+on td.numValue=p.PatronID
+JOIN Polaris.Polaris.PatronRegistration PR with(nolock)
+on td.numValue=pr.PatronID
+where th.transactiontypeid=6014 and td.transactionsubtypeid=6 
+and th.transactiondate > '5-1-2010' 
+and th.transactiondate < GETDATE()
+and p.ChargesAmount > 10 and p.ChargesAmount < 25
+order by numValue

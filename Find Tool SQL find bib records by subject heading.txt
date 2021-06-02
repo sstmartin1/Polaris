@@ -1,0 +1,9 @@
+MainSubjectHeadings joined via BibSubjectIndices:
+ 
+SELECT BR.BibliographicRecordID 
+FROM BibliographicRecords BR (NOLOCK) 
+JOIN BibSubjectIndices BSI (NOLOCK) 
+ON BSI.BibliographicRecordID = BR.BibliographicRecordID  
+JOIN MainSubjectHeadings MSH (NOLOCK) 
+ON MSH.MainSubjectHeadingID = BSI.MainSubjectHeadingID 
+WHERE MSH.BrowseSubject LIKE '%cooking%'

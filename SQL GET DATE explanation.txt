@@ -1,0 +1,27 @@
+That DATEADD function will get you the date exactly one month ago today. So if I run the function on December 3, 2013 it will return a value of November 3, 2013. If you want to get a range of last month, it's a little trickier. To get the first day of this month, you would use:
+
+DATEADD(MONTH, DATEDIFF(MONTH, 0, getdate()), 0)
+
+
+
+Then to get the first day of last month, you would use:
+
+
+
+DATEADD(MONTH, DATEDIFF(MONTH, 0, getdate()) - 1, 0)
+
+
+
+If you set your transaction date to be:
+
+
+
+> DATEADD(MONTH, DATEDIFF(MONTH, 0, getdate()) - 1, 0) and < DATEADD(MONTH, DATEDIFF(MONTH, 0, getdate()), 0)
+
+
+
+then you will get all transactions for last month, regardless of when you run the query. If you create a report that is automatically generated, you could send it out to interested parties on the first day of the month with last month's statistics.
+
+
+
+Chris

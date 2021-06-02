@@ -1,0 +1,6 @@
+select patronid, count(itemrecordid) as "ItemsOut" 
+into #temp
+from itemcheckouts
+group by patronid
+select * from #temp where itemsout > 34
+drop table #temp

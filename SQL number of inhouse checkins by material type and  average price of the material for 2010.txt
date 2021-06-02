@@ -1,0 +1,34 @@
+The main structural problem with the query you wrote comes from the…uh…creativity in the way Polaris records transaction details.  Whenever you need to use the numValue field in the TransactionDetails table, just assume that your life is probably about to get complicated for a while.  
+ 
+The first thing you’ve specified that you need to do is identify all of the transactions that are in-house circ transactions.  You’d also like to retrieve the item number from the transaction details table so that you can link the item record details to the query and do some grouping and averaging stuff with that information.  The problem is that if you do a query that searches for in-house circs, you have to specify that the subtypeid is 128 and the numvalue is 6 in TransactionDetails.  When you need to find the item number, the subtypeid is 38 and the numvalue is the ItemRecordID in TransactionDetails.  You can’t get both pieces of information from a single instance of the TransactionDetails table, so what do you do?  Create two copies of the TransactionDetails table.  You can do that with a temp table, which is a fun concept to play with, or you can just do it in the query by joining TransactionDetails twice and giving it two unique aliases.   In your query, you joined the CircItemRecords table to the TransactionDetails table using the TD.numValue, which you specified in your WHERE clause was 6.  The reason you probably didn’t get any results for that query is that you don’t have an item with a RecordID of 6.
+ 
+If you’re running the query through SQL Server Management Studio, it would look like this:
+ 
+USE PolarisTransactions
+ 
+SELECT ir.MaterialTypeID,  
+COUNT(th.transactionID)as Circs,
+left (avg(ir.Price),5)as [Average Price]
+FROM Polaris.TransactionHeaders TH with (nolock)
+join Polaris.TransactionDetails TD with (nolock) on 
+th.transactionID=td.transactionID
+join Polaris.TransactionDetails TD2 with (nolock) on 
+td2.transactionID=th.transactionID
+join polaris.polaris.ItemRecords IR WITH (nolock)
+ON (TD.numValue = IR.ItemRecordID)
+where TH.TransactionTypeID = 6002
+AND TD.TransactionSubTypeID = 38
+and not ir.Price ='.01'
+AND TD2.TransactionSubTypeID = 128
+AND TD2.numValue=6
+AND TH.TransactionDate BETWEEN '2010-01-01 00:00:00.000' AND '2010-12-31 23:59:59.999'
+GROUP BY  ir.MaterialTypeID
+ 
+There’s no need to join the Organizations table.  If you join ItemRecords (which is not a table, but a view) then you need join neither CircItemRecords nor ItemRecordDetails, as all of the information in those two tables is pulled together in the ItemRecords view.  Technically, you could also cut down the number of joins by using the ViewTransactionData view, which similarly pulls together the data from the TransactionDetails table and the TransactionHeaders table, but there are compelling reasons to not use views if you can avoid it.  I don’t know what they are, but they’re sure compelling.  If you care to explore that topic further, just search for “downside using SQL views.”  I don’t use that view because I never got into the habit like I did with ItemRecords and I am simply too lazy to change.
+ 
+'2010-12-31 00:00:00.000' is the beginning of the day on December 31st.  If you want to count all of the transactions that occurred on that day, you need to use '2010-12-31 23:59:59.999'.  The BETWEEN condition is inclusive.
+My last note is about the average price of the items.  If an item was used in-house more than once, its price is going to go into the average calculation more than once…not sure if that’s what you were going for.
+ 
+I hope this is somewhat intelligible, and please let me know if I can be of further assistance ?
+ 
+Chris

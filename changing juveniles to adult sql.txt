@@ -1,0 +1,38 @@
+UPDATE  Polaris.Patrons 
+SET     PatronCodeID = PatronCodeID - 2
+FROM
+        Polaris.Patrons P(NOLOCK)
+JOIN    Polaris.PatronRegistration R ON R.PatronID = P.PatronID
+WHERE
+        P.PatronCodeID IN (3, 4)
+  AND   R.Birthdate < (DATEADD(year, -18, GETDATE()))
+  AND   R.Birthdate > (DATEADD(year, -25, GETDATE())) 
+
+
+-- Just in case the birthdate is off by a hundred years or something.Angela Allen  writes:
+
+> Do the patron codes that are assigned to a new patron ever change?  I 
+> had it in my head somehow that our code of child would change to teen 
+> and teen would change to adult if we have the birthdate field entered.
+
+We have a scheduled SQL job that does this.  In our case it's complicated by separate patron codes for resident and non-resident patrons in each age category.  We don't automatically change resident and non-resident based on address, mainly because that would be more complicated to implement and also because we consider it less important, but we do update the patron code based on age.
+
+Our SQL that does this can be seen here:
+http://cgi.galion.lib.oh.us/staff/polaris-reports/promote-juvy-patrons-to-adult-if-they-just-turned-eighteen.sql
+
+However, it would need to be modified to be used at a different library, since your patron codes will be different from ours (e.g., the trick of subtracting 2 to make a child an adult will only work if your adult codes are always 2 less than the corresponding child code).  Also, we don't have a "teen" category, so if you do you'll need to work in additional logic for that.
+
+Also, if you have a training server, you should definitely test everything on that first, using a mere copy of your actual data, because, you know, SQL that doesn't just report but actually *changes* things can be sort of irrevocable if you do anything wrong.  An extra semicolon in the wrong place can ruin your whole week.
+
+Once you have the SQL doing what you want, you'll want to set up a scheduled SQL job.  Right-click the SQL Server Management Studio icon and choose "run as administrator", punch in your domain admin username and password, and then in the sidebar on the left side of the management studio, near the bottom of the list, you should see SQL Server Agent.
+Expand that and you'll find Jobs.  When you create a new job you need to specify both the SQL to run and the schedule for when to run it.  
+
+If you run into trouble, you can of course ask more specific questions.
+
+--
+Nathan Eady
+Galion Public Library
+
+--
+View this message online at: http://forums.polarislibrary.com/forums/p/2994/13360.aspx#13360
+--

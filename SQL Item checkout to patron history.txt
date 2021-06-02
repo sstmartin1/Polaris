@@ -1,0 +1,11 @@
+select top 5 TD.numvalue as 'patronid', TH.tranclientdate as 'date'
+from polaristransactions.polaris.transactionheaders TH (nolock)
+inner join polaristransactions.polaris.transactiondetails TD (nolock)
+on TH.transactionid = TD.transactionid
+where TH.transactiontypeid=6001
+and TD.transactionsubtypeid=6
+and TD.transactionid in 
+(select TD.transactionid from polaristransactions.polaris.transactiondetails TD (nolock)
+where TD.transactionsubtypeid=38
+and TD.numvalue=474656) --< Item Control Number
+order by TH.tranclientdate desc

@@ -1,0 +1,23 @@
+This report gives a list of items in a consortium or multi-branch system that have been shipped to a given location to fill hold requests over a range of days, counted backward from today’s date.  It should be run on PolarisTransactions.  I created it to see if there are any glaring holes in our collection development.
+ 
+The variable parameters in the report are @Location (the OrganizationID of the receiving location) and @Range (the number of days to cover in the report, counted backward from today).  The total circulations are grouped by BibRecordID.  Enjoy!
+ 
+USE PolarisTransactions
+select br.bibliographicrecordid,
+br.BrowseTitle,
+count(th.transactionid) as Circs
+from polaris.transactionheaders th with(nolock) 
+join polaris.transactiondetails td with(nolock) on th.Transactionid = td.transactionid
+join polaris.transactiondetails td2 with(nolock) on th.Transactionid = td2.transactionid
+join polaris.polaris.itemrecords ir with(nolock) on td.numValue=ir.ItemRecordid
+join polaris.polaris.bibliographicrecords br with (nolock) on br.BibliographicRecordID=ir.AssociatedBibRecordID
+where th.transactiontypeid=6012
+and td.transactionsubtypeid=38
+and ir.OwningBranchID <> @Location --receiving organization
+and td2.transactionsubtypeid=131
+and td2.numValue=@Location --receiving organization
+and th.transactiondate > getdate()-@Range
+GROUP BY br.bibliographicrecordid,
+br.BrowseTitle
+ORDER by circs
+

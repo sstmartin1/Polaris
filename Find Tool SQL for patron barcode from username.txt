@@ -1,0 +1,8 @@
+Get Patron Barcode from Username 
+And to make it even easier, here is the SQL you can paste into the Patron Registration or Patron Status Find Tool SQL which will pull it up in the search results.
+SELECT PatronID as RecordID
+FROM PatronRegistration
+WHERE Username = 'USER_NAME'
+
+
+

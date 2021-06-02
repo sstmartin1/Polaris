@@ -1,0 +1,9 @@
+transferred or in-transit but have not been checked in in the past 14 days:
+ 
+Select CIR.Barcode, IRD.CallNumber, BR.BrowseTitle, BR.BrowseAuthor, 
+CIR.ItemStatusDate, CIR.AssignedBranchID
+from Polaris.CircItemRecords CIR with (nolock)
+JOIN Polaris.ItemRecordDetails IRD with (nolock) on IRD.ItemRecordID=CIR.ItemRecordID
+JOIN Polaris.BibliographicRecords BR with (nolock) on BR.BibliographicRecordID=CIR.AssociatedBibRecordID
+WHERE CIR.ItemStatusID in (5,6) and CIR.ItemStatusDate < getdate()-14
+ORDER BY IRD.CallNumber

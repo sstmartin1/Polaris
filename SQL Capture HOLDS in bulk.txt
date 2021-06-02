@@ -1,0 +1,10 @@
+I don’t know if you have access to SimplyReports or the tables through some other means, but if you can pair the ItemRecords table with SysHoldRequests tables, then in ItemRecords, ItemStatusID=15 (In-Process), and In SysHoldRequests, HoldStatusID=3 (Active).  In my Microsoft Access query, it looks like this:
+ 
+SELECT Polaris_BibliographicRecords.SortTitle, Polaris_SysHoldRequests.Author, Count(Polaris_SysHoldRequests.BibliographicRecordID) AS Holds, Polaris_Organizations.Abbreviation, Polaris_BibliographicRecords.BibliographicRecordID
+FROM Polaris_Organizations INNER JOIN (Polaris_ItemRecords INNER JOIN ((Polaris_BibliographicRecords INNER JOIN Polaris_SysHoldRequests ON Polaris_BibliographicRecords.BibliographicRecordID = Polaris_SysHoldRequests.BibliographicRecordID) INNER JOIN (Polaris_Invoices INNER JOIN Polaris_InvLines ON Polaris_Invoices.InvoiceID = Polaris_InvLines.InvoiceID) ON Polaris_BibliographicRecords.BibliographicRecordID = Polaris_InvLines.BibliographicRecordID) ON Polaris_ItemRecords.AssociatedBibRecordID = Polaris_BibliographicRecords.BibliographicRecordID) ON Polaris_Organizations.OrganizationID = Polaris_ItemRecords.AssignedBranchID
+WHERE (((Polaris_SysHoldRequests.SysHoldStatusID)=3) AND ((Polaris_ItemRecords.ItemStatusID)=15) AND ((Polaris_ItemRecords.StatisticalCodeID)=18 Or (Polaris_ItemRecords.StatisticalCodeID)=19 Or (Polaris_ItemRecords.StatisticalCodeID)=47))
+GROUP BY Polaris_BibliographicRecords.SortTitle, Polaris_SysHoldRequests.Author, Polaris_Organizations.Abbreviation, Polaris_BibliographicRecords.BibliographicRecordID
+ORDER BY Polaris_BibliographicRecords.SortTitle;
+ 
+In this case, statistical codes narrow the search down to our music collection, and AssignedBranchID helps locate the material.
+ 

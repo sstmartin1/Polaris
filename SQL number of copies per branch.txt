@@ -1,0 +1,99 @@
+SELECT
+
+t1.CallNumber,
+
+t1.Title, 
+
+t1.ItemsInBranch1 AS 'Merr/UL', 
+
+isnull(t2.ItemsinBranch2,0) AS 'Cedar Lake'
+
+
+
+FROM
+
+(SELECT br.browsetitle AS Title, 
+
+br.browsecallno AS CallNumber, 
+
+count(ci.itemrecordid) AS ItemsInBranch1, 
+
+br.bibliographicrecordid AS ID
+
+FROM
+
+Polaris.bibliographicrecords br WITH (NOLOCK)
+
+JOIN  polaris.circitemrecords ci 
+
+	ON (br.bibliographicrecordid = ci.associatedbibrecordid)
+
+ 
+
+WHERE ci.itemstatusid = 1
+
+	AND ci.recordstatusid = 1
+
+        AND ci.AssignedBranchID IN  (5,14)
+
+	AND ci.AssignedCollectionID = 2
+
+	AND br.PublicationYear > 2010
+
+ 
+
+
+
+GROUP BY br.browsetitle, 
+
+br.browsecallno, 
+
+br.bibliographicrecordid) t1
+
+
+
+LEFT JOIN
+
+(Select br.browsetitle as Title, 
+
+br.browsecallno as CallNumber, 
+
+count(ci.itemrecordid) as ItemsinBranch2, 
+
+br.bibliographicrecordid as ID
+
+
+
+FROM polaris.bibliographicrecords br WITH (NOLOCK)
+
+ 
+
+JOIN Polaris.circitemrecords ci on (br.bibliographicrecordid = ci.associatedbibrecordid)
+
+ 
+
+WHERE ci.itemstatusid = 1
+
+	AND ci.recordstatusid = 1
+
+	AND ci.AssignedBranchID = 4
+
+	AND ci.AssignedCollectionID = 2
+
+ 
+
+
+
+GROUP BY br.browsecallno,
+
+br.browsetitle, 
+
+br.bibliographicrecordid) t2
+
+ON (t1.ID = t2.ID)
+
+WHERE t1.ItemsInBranch1 > 2 and t2.ItemsinBranch2 IS NULL
+
+
+
+ORDER  BY t1.CallNumber

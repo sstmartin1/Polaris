@@ -1,0 +1,6 @@
+SELECT Distinct BT.BibliographicRecordID as recordid
+FROM BibliographicTags BT with (nolock)
+JOIN BibliographicSubfields BS with (nolock)
+ON BS.BibliographicTagID = BT.BibliographicTagID   
+WHERE BT.TagNumber = 586
+AND (BS.Data LIKE '%newpur%' OR BS.Data LIKE '%order%')

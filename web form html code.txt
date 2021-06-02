@@ -1,0 +1,346 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Suggestion for Purchase - Euless Public Library - City of Euless</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=760" />
+<link rel="stylesheet" type="text/css" media="screen" href="/includes/navmenu.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="/includes/style.css" />
+<link rel="stylesheet" type="text/css" media="print" href="/includes/print.css" />
+<script type="text/javascript" src="/includes/navmenu.js"></script>
+
+<style type="text/css">
+#sidemenu-SuggestAPurchase,
+#sidemenu-SuggestAPurchase:hover {
+	background-color:#000064;
+	border-right:5px solid red;
+	color:#ffffff;
+}
+</style>
+<style type="text/css">
+/*
+#content #tblForm {
+	margin-left:auto;
+	margin-right:auto;
+	width:455px;
+}
+#tblForm td {
+	text-align:left;
+	width:auto;
+}
+#tblForm td.label {
+	padding:0 0 0 50px;
+}
+#content #CheckBoxList1 {
+    border:0;
+}
+#content #CheckBoxList1 input, #content #CheckBoxList1 label {
+    display:block;
+	float:left;
+}
+#content #CheckBoxList1 label {
+	margin-left:15px;
+}
+*/
+#content table {
+	border:0;
+}
+#content table#rblChecked {
+	border:0;
+	margin:0;
+	padding:0;
+}
+#content td.label {
+	text-align:right;
+}
+#content td.input {
+	text-align:left;
+}
+#content th a:link, #content th a:visited {
+	color:#FFFFFF;
+}
+#content th a:hover {
+	color:#F00;
+	text-decoration:none;
+}
+#content #rbFormat {
+	margin:0;
+	padding:0;
+}
+#content #rbFormat td {
+	margin:0;
+	padding:0;
+	text-align:left;
+	vertical-align:top;
+}
+</style>
+</head>
+<body id="library">
+
+<div id="section-title">Euless Public Library</div>
+
+<div id="page">
+<div id="header">
+	<div id="title"><a href="/" title="City of Euless: Home">City of Euless</a></div>
+	<div id="menu">
+
+		<ul id="navmenu">
+		<li><a href="#">Community</a>
+			<ul>
+			<li><a href="/animal/">Animal Services</a></li>
+			<li><a href="/calendar/">Calendar Of Events</a></li>
+			<li><a href="/ecodev/euless_facts.htm">Euless Facts</a></li>
+			<li><a href="/environment/garbage.htm">Garbage</a></li>
+
+			<li><a href="/environment/recycling.htm">Recycling</a></li>
+			<li><a href="/history/">History</a></li>
+			<li><a href="/library/">Library</a></li>
+			<li><a href="/ecodev/localrestaurants.aspx">Local Restaurants</a></li>
+			<li><a href="/pacs/">Parks &amp; Community Services</a></li>
+
+			<li><a href="/pacs/simmons.htm">Seniors Activities</a></li>
+			<li><a href="/info/transportation-services.htm">Transportation</a></li>
+			<li><a href="/info/utilities.htm">Utilities</a></li>
+			</ul>
+		</li>
+		<li><a href="#">Departments</a>
+			<ul>
+
+			<li><a href="/animal/">Animal Services</a></li>  
+			<li><a href="/courts/">Courts</a></li>
+			<li><a href="/ecodev/">Economic Development</a></li>
+			<li><a href="/engineering/">Engineering</a></li>
+			<li><a href="/finance/">Finance &amp; Budget</a></li>  
+			<li><a href="/fire/">Fire Department</a></li> 
+			<li><a href="/fleet/">Fleet &amp; Facility Operations</a></li>
+
+			<li><a href="/hr/">Human Resources</a></li>
+			<li><a href="/library/">Library</a></li>
+			<li><a href="/pacs/">Parks &amp; Community Services</a></li>
+			<li><a href="/planning/">Planning &amp; Development</a></li>
+			<li><a href="/police/">Police Department</a></li>
+
+			<li><a href="/publicworks/">Public Works</a></li>
+			<li><a href="/purchasing/">Purchasing</a></li>  
+			<li><a href="/water/">Water Utilities</a></li>
+			</ul>
+		</li>
+		<li><a href="#">City Hall</a>
+			<ul>
+
+			<li><a href="/cityhall/mayor.htm">Mayor</a></li>
+			<li><a href="/cityhall/council.htm">City Council</a></li>
+			<li><a href="/cityhall/meetings.htm">Public Meetings</a></li>
+			<li><a href="/cityhall/boards.htm">Boards &amp; Commissions</a></li>
+			<li><a href="/cmo/">City Manager's Office</a></li>
+
+			<li><a href="/cso/">City Secretary's Office</a></li>
+			<li><a href="/cityhall/campus.htm">City Hall Campus</a></li>
+			</ul>
+		</li>
+		<li><a href="#">Employment</a>
+			<ul>
+			<li><a href="/hr/jobs.htm">Job Opportunities</a></li>
+
+			<li><a href="/hr/apply.htm">How to Apply</a></li>
+			<li><a href="/hr/benefits.htm">Benefits Summary</a></li>
+			<li><a href="/hr/pd_recruit.htm">Police Officer Recruit</a></li>
+			<li><a href="/hr/fd_recruit.htm">Firefighter Recruit</a></li>
+			<li><a href="/hr/default.htm">Human Resources</a></li>
+			</ul>
+
+		</li>
+		<li><a href="#">Texas Star Sports Centre</a>
+			<ul>
+			<li><a href="http://www.drpepperstarcenter.com">Dr Pepper StarCenter</a></li>
+			<li><a href="/pacs/rec_facilities/pats.htm">Parks at Texas Star</a></li>
+			<li><a href="http://www.texasstargolf.com/ravensgrille.shtm">Raven's Grille</a></li>
+			<li><a href="/pacs/rec_facilities/sbw.htm">Softball World at Texas Star</a></li>
+
+			<li><a href="http://www.texasstargolf.com">Texas Star Golf Course</a></li>
+			</ul>
+		</li>
+		</ul><!-- id="navmenu" -->
+	</div><!-- id="menu" -->
+    <div id="search">
+        <form action="http://www.eulesstx.gov/search.htm" id="cse-search-box">
+          <div>
+
+            <input type="hidden" name="cx" value="001392781754338042557:4byxsaqqwms" />
+            <input type="hidden" name="cof" value="FORID:11" />
+            <input type="hidden" name="ie" value="UTF-8" />
+            <input type="text" name="q" size="25" />
+            <input type="submit" name="sa" value="Search" />
+          </div>
+        </form>
+    </div>
+</div><!-- id="header" -->
+
+<div id="main">
+
+<!-- Library Side Menu -->
+<div class="sidemenu">
+<img src="/images/sidemenu/library.jpg" alt="Euless Public Library" width="135" height="105" style="border:2px solid #C90200;" />
+<ul>
+	<li><a id="sidemenu-OnlineCatalog" href="http://catalog.eulesstx.gov/polaris" target="_blank">Online Catalog</a></li>
+	<li><a id="sidemenu-AdultServices" href="/library/adult_services.htm">Adult Services</a></li>
+	<li><a id="sidemenu-CirculationServices" href="/library/circulation.htm">Circulation Services</a></li>
+	<li><a id="sidemenu-ContactInformation" href="/library/contact_info.htm">Contact Information</a></li>
+
+	<li><a id="sidemenu-DownloadableAudiobooks" href="/library/DownloadableAudiobooks.htm">eAudiobooks</a></li>
+    <li><a id="sidemenu-EnglishDiscoveriesOnline" href="/library/EnglishDiscoveriesOnline.htm">English Discoveries Online</a></li>
+	<li><a id="sidemenu-Genealogy" href="/library/genealogy.htm"><b>+ </b>Genealogy</a>
+        <ul id="sublist-Genealogy">
+        <li><a id="sidemenu-AncestryPlus" href="/library/ancestry_plus.htm">Ancestry Plus</a></li>
+        <li><a id="sidemenu-FamilyCenters" href="/library/genealogy_familycenters.htm">Family Centers</a></li>
+
+        <li><a id="sidemenu-GenealogicalSocieties" href="/library/genealogy_societies.htm">Genealogical Societies</a></li>
+        <li><a id="sidemenu-GenealogyLibraries" href="/library/genealogy_libraries.htm">Libraries</a></li>
+        <li><a id="sidemenu-GenealogyOnlineResources" href="/library/genealogy_websites.htm">Online Resources</a></li>
+	    </ul>
+    </li>
+	<li><a id="sidemenu-LibraryNewsletter" href="/library/newsletter/archives.aspx">Library Newsletter</a></li>
+	<li><a id="sidemenu-MeetingFacilities" href="/library/meeting_rooms.htm"><b>+ </b>Meeting Facilities</a>
+
+        <ul id="sublist-MeetingFacilities">
+        <li><a id="sidemenu-MeetingRoomFees" href="/library/meeting_rooms_fees.htm">Fees</a></li>
+        <li><a id="sidemenu-MeetingRoomPolicies" href="/library/meeting_rooms_policies.htm">Policies</a></li>
+	    </ul>
+    </li>
+	<li><a id="sidemenu-ResearchDatabases" href="/library/virtual_library.htm">Research Databases</a></li>
+    <li><a id="sidemenu-SuggestAPurchase" href="/library/suggestion.aspx">Suggest a Purchase</a></li>
+
+    <li><a id="sidemenu-WirelessAccess" href="/library/WirelessAccess.htm">Wireless Access</a></li>
+	<li><a id="sidemenu-YouthServices" href="/library/youth_services.htm">Youth Services</a></li>
+    <li class="offsite"><a id="sidemenu-EulessLibraryFoundation" href="http://www.eulesslibraryfoundation.org/" target="_blank">Euless Library Foundation</a></li>
+    <li class="other"><a class="sidemenu-LibraryBoard" href="/cityhall/boards/lb.htm">Library Board</a></li>
+	<li><a id="sidemenu-LibraryHome" href="/library/">Library Home</a></li>
+</ul>
+</div><!-- id="sidemenu" -->
+
+<div id="content">
+
+<form name="form1" method="post" action="suggestion.aspx" id="form1">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJNzE2MzY5Nzk0D2QWAgIID2QWAgIBDw8WAh4HVmlzaWJsZWhkZGReBq9yW9yF6dzhddbIP4ZR43fv3w==" />
+</div>
+
+<div>
+
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWEgLaqO3dCwK9y/6ZCgL9uc7aCQKf1uC1BQL55JyzBAK9oIjKBgLBzpbDCwKK78ZnApf32KAHAtyvx8UNAprV/6MLArWW3NANAsfkxr8LAsSEhIULAsSS7bAIAoTz/boMAtLus/sGAoTcs9wB5o6urb/gky0W4LeZ1AEN7XUw/8I=" />
+</div>
+
+<!-- <img src="/images/logos/eulesszba.gif" alt="City of Euless Logo" /> -->
+
+<h3>Suggestion for Purchase Form</h3>
+
+
+
+<div id="panForm">
+	
+
+<p>If you have a suggestion for a title the Library does not currently own, please fill out the form below. All items will be considered but we cannot guarantee that a requested item will be purchased. If a title is old or out of print, please call the Library to ask about Interlibrary Loan.</p>
+
+<div class="center"><span id="lblError" style="color:Red;font-weight:bold;font-style:italic;"></span></div>
+
+<table id="tblForm" border="0">
+
+<tr><th colspan="2">Did you check the <a href="http://catalog.ci.euless.tx.us/polaris" target="_blank">Library Catalog</a> for this item?</th></tr>
+
+<tr>
+<td colspan="2">
+<table id="rblChecked" border="0">
+		<tr>
+			<td><input id="rblChecked_0" type="radio" name="rblChecked" value="Yes" /><label for="rblChecked_0">Yes</label></td><td><input id="rblChecked_1" type="radio" name="rblChecked" value="No" /><label for="rblChecked_1">No</label></td>
+		</tr>
+	</table>
+</td>
+</tr>
+
+<tr><th colspan="2">Suggestion for purchase</th></tr>
+<tr><td class="label" width="33%">Title</td><td class="input"><input name="txtTitle" type="text" id="txtTitle" style="width:215px;" /></td></tr>
+<tr><td class="label">Author</td><td class="input"><input name="txtAuthor" type="text" id="txtAuthor" style="width:215px;" /></td></tr>
+<tr><td class="label">Publication Date</td><td class="input"><input name="txtPublicationDate" type="text" id="txtPublicationDate" style="width:215px;" /></td></tr>
+<tr>
+<td class="label" valign="top">Format</td>
+<td class="input">
+
+
+
+<table id="rbFormat" border="0">
+		<tr>
+
+			<td><input id="rbFormat_0" type="radio" name="rbFormat" value="Book" /><label for="rbFormat_0">Book</label></td><td><input id="rbFormat_1" type="radio" name="rbFormat" value="Music CD" /><label for="rbFormat_1">Music CD</label></td>
+		</tr><tr>
+			<td><input id="rbFormat_2" type="radio" name="rbFormat" value="Book on CD" /><label for="rbFormat_2">Book on CD</label></td><td><input id="rbFormat_3" type="radio" name="rbFormat" value="Book on Tape" /><label for="rbFormat_3">Book on Tape</label></td>
+		</tr><tr>
+			<td><input id="rbFormat_4" type="radio" name="rbFormat" value="DVD" /><label for="rbFormat_4">DVD</label></td><td></td>
+		</tr>
+
+	</table>
+
+</td>
+</tr>
+
+<tr><th colspan="2">Contact Information</th></tr>
+<tr><td colspan="2" class="center"><i>Providing contact information is optional.</i></td></tr>
+<tr><td class="label">Name</td><td class="input"><input name="txtName" type="text" id="txtName" style="width:215px;" /></td></tr>
+<tr><td class="label">Phone Number</td><td class="input"><input name="txtPhone" type="text" id="txtPhone" style="width:215px;" /></td></tr>
+<tr><td class="label">Email</td><td class="input"><input name="txtEmail" type="text" id="txtEmail" style="width:215px;" /></td></tr>
+
+<tr><th colspan="2">Where did you hear about this item?</th></tr>
+<tr><td colspan="2" class="center">
+    <textarea name="txtFreeText" rows="2" cols="20" id="txtFreeText" style="height:250px;width:375px;"></textarea>
+</td></tr>
+
+</table>
+<p class="center"><input type="submit" name="btnEmail" value="Send Suggestion" id="btnEmail" /></p>
+
+
+</div>
+
+</form>
+
+</div><!-- id="content" -->
+
+<!-- Library Sidebar -->
+<div id="sidebar">
+
+<img src="/images/coe_sidebar_library.jpg" alt="Library Book" width="120" height="82" style="margin:37px 0 22px 17px;" />
+
+<hr />
+
+<p>
+<strong>Kate Lyon</strong><br />
+Library Administrator
+</p>
+
+</div><!-- id="sidebar" -->
+
+</div><!-- id="main" -->
+
+<div id="footer"><small>&copy; Copyright 2003 - 2010, <a href="http://www.eulesstx.gov/">www.eulesstx.gov</a>. All Rights Reserved. <a href="/info/phonelist.htm">Contact Us</a>. <a href="/sitemap.htm">Site Map</a>.</small></div>
+</div><!-- id="page" -->
+
+<!-- Google Search Box Code -->
+<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+
+<!-- Google Analytics Code -->
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-3294465-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+</body>
+</html>

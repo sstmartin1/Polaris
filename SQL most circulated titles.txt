@@ -1,0 +1,51 @@
+Yes.  You'll have to make adjustments to fit the details of your particular setup (particularly as regards which items you want to report on; we use statistical code, but you could use collection or something else, depending on how your data are structured), but the following should be a starting point (assuming the mailing list software doesn't remove too much of it)...
+
+DECLARE @minstatcode INTEGER;
+DECLARE @maxstatcode INTEGER;
+SET @minstatcode = 204;
+SET @maxstatcode = 204;
+
+DECLARE @SinceWhen DATETIME;
+DECLARE @UntilWhen DATETIME;
+SET @SinceWhen = CAST('2010-01-01' AS DATETIME); SET @UntilWhen = CAST('2011-01-01' AS DATETIME);
+
+DECLARE @ITEM TABLE (
+    itemid INTEGER,
+    title  VARCHAR(255),
+    author VARCHAR(255),
+    callno VARCHAR(255),
+    circ   INTEGER
+);
+
+DECLARE @TRANS TABLE (
+    tid       INTEGER,
+    titem     INTEGER
+);
+
+INSERT INTO @TRANS ( tid, titem )
+SELECT TH.TransactionID,
+       TD.numValue
+FROM   PolarisTransactions.Polaris.TransactionHeaders TH
+JOIN   PolarisTransactions.Polaris.TransactionDetails TD
+    ON TD.TransactionID = TH.TransactionID WHERE  TH.TranClientDate >= @SinceWhen
+AND    TH.TranClientDate 
+AND    TH.TransactionTypeID = 6001
+AND    TD.TransactionSubTypeID = 38;
+
+INSERT INTO @ITEM (itemid, title, author, callno, circ) SELECT I.ItemRecordID,
+       B.BrowseTitle,
+       B.BrowseAuthor,
+       B.BrowseCallNo,
+       (SELECT COUNT(*)
+        FROM   @TRANS T
+        WHERE  T.titem = I.ItemRecordID)
+FROM   Polaris.CircItemRecords I
+JOIN   Polaris.BibliographicRecords B
+       ON B.BibliographicRecordID = I.AssociatedBibRecordID WHERE  I.StatisticalCodeID >= @minstatcode
+AND    I.StatisticalCodeID 
+;
+
+SELECT TOP 200
+       title, author, callno, circ
+FROM @ITEM
+ORDER BY circ DESC;

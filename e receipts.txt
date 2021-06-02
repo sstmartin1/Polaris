@@ -1,0 +1,12 @@
+Parameters
+	Patron Services
+		Ereceipt options
+		Check-Out Optional Patron Data
+		Patron Registration Options
+Self Check
+	Polaris ExpressCheck: Options
+		Enable eReceipts
+
+Profiles
+	PAC
+		Patron Receipts	

@@ -1,0 +1,9 @@
+If you delete a postal code record that has patron records using it, Polaris asks which postal code you want to replace it with.  So it’s more like a merge than a deletion.  
+ 
+If you want to see which patrons are associated with a particular postal code, find the postal code in the postal codes table and double-click it.  In the title bar of the pop-up window, you will see the postal code id .  Substitute your postal code ID for ‘52692’ in the following query in the Patron Find Tool:
+ 
+SELECT PR.PatronID as RecordID from PatronRegistration PR WITH (NOLOCK) 
+JOIN Patrons P on PR.PatronID=P.PatronID
+JOIN PatronAddresses PA on P.PatronID=PA.PatronID
+JOIN Addresses A on PA.AddressID=A.AddressID
+WHERE A.PostalCodeID=52692 and PA.AddressTypeID=2

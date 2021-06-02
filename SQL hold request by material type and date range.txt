@@ -1,0 +1,6 @@
+
+
+SELECT MT.Description, COUNT(MT.Description) AS "MatType Count"
+FROM PolarisTransactions.Polaris.TransactionHeaders TH WITH (NOLOCK) JOIN PolarisTransactions.Polaris.TransactionDetails TD WITH (NOLOCK) ON TD.TransactionID = TH.TransactionID JOIN Polaris.Polaris.CircItemRecords CIR WITH (NOLOCK) ON CIR.ItemRecordID = TD.numValue JOIN MaterialTypes MT WITH (NOLOCK) ON MT.MaterialTypeID = CIR.MaterialTypeID WHERE TH.TransactionTypeID = 6012  --Holds become shipped AND TH.TranClientDate BETWEEN '2011-07-01 00:00:00.000' AND '2011-07-31 23:59:59.999'
+GROUP BY MT.Description
+ORDER BY MT.Description

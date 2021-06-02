@@ -1,0 +1,6 @@
+
+SELECT BT.BibliographicRecordID AS RecordID
+from Polaris.BibliographicTags BT WITH(NOLOCK)
+WHERE BT.TagNumber = 856
+AND BT.IndicatorOne = 4
+AND BT.IndicatorTwo = 2

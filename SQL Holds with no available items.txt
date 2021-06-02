@@ -1,0 +1,5 @@
+This was given to us but I adapted it to just Missing items. I just realized though that these are all holds with Missing Items not just Only Copies. It has become a little more manageable. :) 
+ 
+Select hr.SysHoldRequestID as RecordID from Polaris.SysHoldRequests hr with (nolock) inner join Polaris.BibliographicRecords br with (nolock) on (hr.BibliographicRecordID = br.BibliographicRecordId) Inner join CircItemRecords cir with (nolock) on (br.BibliographicRecordID=cir.AssociatedBibRecordID) where cir.ItemStatusID in (10) and hr.SysHoldStatusID = 3 and hr.PickupBranchID in (3,5,6,7,12,9,13,10,8,4,11)
+ 
+I did find out that I could change the ItemStatusID to find Lost Items also. We have a library system that is on our ILS so we added the Pickup Branch to exclude their holds.

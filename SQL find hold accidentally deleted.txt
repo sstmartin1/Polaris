@@ -1,0 +1,28 @@
+select th.TransactionDate as DeniedOn, p.Barcode, pr.PatronFullName, td1.numvalue as PatronID, br.BrowseTitle as Title, 
+pu.Name as DeniedBy, o.Name as Location, w.ComputerName 
+from PolarisTransactions.polaris.TransactionHeaders th (nolock)
+--- Get Patron Info
+inner join PolarisTransactions.polaris.TransactionDetails td1 (nolock)
+on td1.TransactionID = th.TransactionID and td1.TransactionSubTypeID = 6  -- Transactionsubtype 6 is the patron ID
+inner join polaris.polaris.Patronregistration pr (nolock) 
+on td1.numValue = pr.PatronID  
+inner join polaris.polaris.Patrons p (nolock) 
+on td1.numValue = p.PatronID --might as well get barcode
+-- get Bibl info 
+inner join PolarisTransactions.polaris.TransactionDetails td2 (nolock) 
+on td2.TransactionID = td1.transactionID  and td2.TransactionSubTypeID = 36  -- Transactionsubtype 36 is the BibID
+inner join polaris.polaris.BibliographicRecords br (nolock) 
+on td2.numValue = br.BibliographicRecordID  -- get Title 
+--- This next bit is optional, it wasnt included in your question but it provides the 'where' and 'who'. 
+inner join polaris.PolarisUsers pu (nolock)
+on pu.PolarisUserID = th.PolarisUserID   -- get username of staff that deneleted the hold
+inner join polaris.Workstations w (nolock)
+on w.WorkstationID = th.WorkstationID   -- Workstation involved
+inner join polaris.Organizations o (nolock)
+on o.OrganizationID = th.OrganizationID   -- get Org name (assuming you have more than one branch/lib)
+ 
+Where th.TransactionTypeID =6009   ----- hold becomes denied
+and th.TransactionDate between '2012/04/03 00:00:01' and '2012/04/03 23:59:59'
+ 
+Of course, you would replace the dates with the date you want to supply. If you put this in a report you can change the date to a Parameter.
+Amy 

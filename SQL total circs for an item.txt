@@ -1,0 +1,14 @@
+USE PolarisTransactions
+
+CREATE PROCEDURE sp_GetFiveYearCircs
+@ItemRecordID integer
+as
+select datepart (yy,th.transactiondate) as CircYear, count(td.TransactionID) as Circs from polaris.transactionheaders th (nolock) left join polaris.transactiondetails td (nolock) on th.Transactionid = td.transactionid where th.transactiontypeid=6001 and td.transactionsubtypeid=38 and td.numvalue=@ItemRecordID GROUP by datepart (yy,th.transactiondate) Order By CircYear
+
+USE PolarisTransactions
+EXECUTE sp_GetFiveYearCircs '76224'
+
+---
+
+The first and second statements will create a stored procedure for you.  In the third, just replace the Item Record ID in the execute statement with your specific Item Record ID.  I can put that into an .rdl file later on so you can load it as a custom report and run it directly from the Polaris client.
+

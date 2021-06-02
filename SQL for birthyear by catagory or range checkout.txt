@@ -1,0 +1,82 @@
+ 
+Here’s a SQL Query that might work for you with some tweaking.  I am not entirely sure how to go about putting it into and using it as a stored procedure.  
+ 
+The Case Statement in the Select and Group By Clauses allows the count to be based on the AgeGroup instead of the PR.Birthdate field.  Counting I think is always based upon your Group By clause, the count is broken down to the smallest grouping listed in the Group By clause. 
+ 
+I think Using the GetDate() function will allow the report to, “automatically increment the age categories from one year to the next” as you were asking since it will always be the current year minus some number of years for an age category.   I used 10 year increments.  You will want to change those increments in both case statements to match your age categories.
+ 
+The Compute Sum(count(th.transactionid)) function at the end of the Query will give you a total circulation count.  If you are creating a  report through Visual Studio or Report Builder you could build a total circ there and leave it off of the query.
+ 
+Let me know if you have questions about this query I will be happy to try answering them.
+ 
+Daniel Heaton
+Systems and Technical Services Manager
+Jefferson County Library
+360-385-6544
+dheaton@jclibrary.info
+www.jclibrary.info
+ 
+ 
+DECLARE @dtBeginYear date,
+@dtEndYear date,
+@dtBeginDate date,
+@dtEndDate date
+ 
+SET @dtBeginYear = '1900-01-01 00:00:00.000'
+SET @dtEndYear = '2020-01-01 00:00:00.000'
+SET @dtBeginDate = '2012-01-01 00:00:00.000'
+SET @dtEndDate = '2012-12-31 11:59:59.000'
+ 
+ 
+select o.name, 
+w.ComputerName, 
+count (th.transactionid) AS CirculationTotal, 
+(Case 
+WHEN PR.Birthdate > Getdate() THEN 'Not yet Born'  -- Accidental EntryDate of future birthdate?
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -10, GETDATE()))and YEAR(Getdate()) THEN '0-10'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -20, GETDATE()))and YEAR(DATEadd("year", -10, GETDATE())) THEN '11-19'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -30, GETDATE()))and YEAR(DATEadd("year", -20, GETDATE())) THEN '20-29'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -40, GETDATE()))and YEAR(DATEadd("year", -30, GETDATE()))  THEN '30-39'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -50, GETDATE()))and YEAR(DATEadd("year", -40, GETDATE())) THEN '40-49'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -60, GETDATE()))and YEAR(DATEadd("year", -50, GETDATE())) THEN '50-59'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -70, GETDATE()))and YEAR(DATEadd("year", -60, GETDATE())) THEN '60-69'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -80, GETDATE()))and YEAR(DATEadd("year", -70, GETDATE())) THEN '70-79'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -90, GETDATE()))and YEAR(DATEadd("year", -80, GETDATE())) THEN '80-89'
+ 
+ELSE '90+'
+End)as 'Agegroup'
+ 
+from polaristransactions.Polaris.transactionheaders th (NOLOCK)
+inner join polaristransactions.Polaris.transactiondetails td (NOLOCK) 
+on (th.transactionid = td.transactionid)            
+inner join polaris.organizations o (NOLOCK) 
+on (th.organizationid = o.organizationid)            
+inner join Polaris.Workstations w (NOLOCK) 
+on (th.workstationid = w.WorkstationID)            
+left join polaris.PatronRegistration PR (nolock) 
+on (td.numvalue = PR.PatronID)  
+where transactiontypeid = 6001 
+and transactionsubtypeid = 6 
+and pr.Birthdate between @dtBeginYear and @dtEndYear 
+and tranclientdate >= @dtBeginDate and tranclientdate <= @dtEndDate
+         
+group by  O.Name, w.ComputerName, 
+(Case 
+WHEN PR.Birthdate > Getdate() THEN 'Not yet Born'  -- Accidental EntryDate of future birthdatedate?
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -10, GETDATE()))and YEAR(Getdate()) THEN '0-10'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -20, GETDATE()))and YEAR(DATEadd("year", -10, GETDATE())) THEN '11-19'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -30, GETDATE()))and YEAR(DATEadd("year", -20, GETDATE())) THEN '20-29'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -40, GETDATE()))and YEAR(DATEadd("year", -30, GETDATE()))  THEN '30-39'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -50, GETDATE()))and YEAR(DATEadd("year", -40, GETDATE())) THEN '40-49'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -60, GETDATE()))and YEAR(DATEadd("year", -50, GETDATE())) THEN '50-59'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -70, GETDATE()))and YEAR(DATEadd("year", -60, GETDATE())) THEN '60-69'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -80, GETDATE()))and YEAR(DATEadd("year", -70, GETDATE())) THEN '70-79'
+WHEN (DATEPART("year", PR.Birthdate)) between YEAR(DATEadd("year", -90, GETDATE()))and YEAR(DATEadd("year", -80, GETDATE())) THEN '80-89'
+ 
+ELSE '90+'
+End)
+ 
+order by O.Name,computername           
+ 
+Compute Sum(count(th.transactionid))
+

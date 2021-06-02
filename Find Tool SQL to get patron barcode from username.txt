@@ -1,0 +1,5 @@
+SELECT PATRONID AS RECORDID
+FROM patronRegistration pr with(Nolock)
+WHERE pr.username like 'USERNAME_HERE'
+
+

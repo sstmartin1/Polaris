@@ -1,0 +1,68 @@
+TH.TransactionTypeID 6012 has no SubType =129.  So the first query is excluding all of the transactions with TransactionTypeID=6012 right off the bat.  Which is probably a good thing because you’re counting pretty much the same thing with the Checkin->Transferred and Check-in->In-transit.  I would rewrite the query as such:
+ 
+SELECT COUNT (*)
+FROM PolarisTransactions..TransactionDetails TD WITH (nolock)
+INNER JOIN PolarisTransactions..TransactionHeaders TH WITH (nolock)
+ON (TH.TransactionID = TD.TransactionID)
+WHERE TH.TransactionTypeID = 6002 AND TD.TransactionSubTypeID = 129 AND TD.numValue in (5,6)
+AND (TH.TransactionDate BETWEEN '2010-10-24 00:00:00.000' AND '2010-10-24 23:59:00.000')
+ 
+It should give you the same number but it makes more sense when you read it.
+ 
+The second query is giving you far more results because of the first clause in the WHERE statement : (ActionTakenID = 11 or ActionTakenID = 22 or ActionTakenID = 29)
+ 
+One checkin may result in more than one action taken.  You should chance that statement to simply ActionTakenID = 11.  It looks like that may still short you some transactions, however, as there are other ways for an item to transfer to In-Transit or Transferred without being checked in.  If you are wondering (as was I) what those methods are in your database, run this:
+ 
+SELECT ActionTakenID, count(ActionTakenID)
+from Polaris.ItemRecordHistory WITH (nolock)
+where ActionTakenID not IN (11,22,29)
+AND NewItemStatusID IN (5,6)
+AND (TransactionDate BETWEEN '2010-10-24 00:00:00.000' AND '2010-10-24 23:59:00.000')
+Group by actiontakenid
+ 
+I have no idea about the SimplyReports result.
+ 
+Chris
+ 
+Mr. Chris Accardo 
+Assistant Director 
+Weatherford Public Library 
+1014 Charles St. 
+Weatherford, TX  76086 
+817.598.4158 
+817.598.4161 (fax) 
+caccardo@weatherfordtx.gov 
+From: Deb Lewis [mailto:bounce-Deb_Lewis@polarislibrary.com] 
+Sent: Monday, October 25, 2010 3:09 PM
+To: Chris Accardo
+Subject: [Polaris Admin Forum] Need SQL Help - Number of items put into transit during a specified time period
+ 
+Hi All,
+ 
+I need some SQL help.  We’re trying to estimate the number of items we sort (or at least need to sort) during a specified time period based on the number of items set to Transit or Transit Hold during that time period.
+ 
+I’ve tried 2 different SQL queries resulting in 2 widely differing answers, plus used SimplyReports as a control – that result hits in the middle.
+ 
+Query 1, result 1,690:
+ 
+SELECT COUNT (*)
+FROM PolarisTransactions..TransactionDetails TD WITH (nolock)
+INNER JOIN PolarisTransactions..TransactionHeaders TH WITH (nolock)
+ON (TH.TransactionID = TD.TransactionID)
+WHERE (TH.TransactionTypeID = 6002 or TH.TransactionTypeID = 6012)
+AND TD.TransactionSubTypeID = 129
+AND (TD.numValue = 6 OR TD.numValue = 5)
+AND (TH.TransactionDate BETWEEN '2010-10-24 00:00:00.000' AND '2010-10-24 23:59:00.000')
+ 
+Query 2, result 2,918:
+ 
+SELECT COUNT (*)
+from ItemRecordHistory WITH (nolock)
+where (ActionTakenID = 11 or ActionTakenID = 22 or ActionTakenID = 29)
+AND (NewItemStatusID = 5 OR NewItemStatusID = 6)
+AND (TransactionDate BETWEEN '2010-10-24 00:00:00.000' AND '2010-10-24 23:59:00.000')
+ 
+SimplyReports, Item Count Report, with Item Date Filter In-transit sent date specified as 10/24/2010 to 10/24/2010 and only output column is Item Sending Branch Name.  Did early on 10/25, logically before any materials put into transit on Sunday would still be in transit and not yet received.  Result:  2,160.
+
+ 
+

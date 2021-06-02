@@ -1,0 +1,25 @@
+SELECT BR.BibliographicRecordID AS recordID 
+
+FROM polaris.Bibliographicrecords BR 
+
+WHERE BR.BibliographicRecordID  NOT IN (
+
+	SELECT DISTINCT(BR.BibliographicRecordID) AS recordID 
+
+	FROM polaris.Bibliographicrecords BR 
+
+	JOIN polaris.BibrecordSets BRS (NOLOCK) ON BRS.BibliographicRecordID = BR.BibliographicrecordID 
+
+	JOIN polaris.BibliographicTags BT (NOLOCK) ON BT.BibliographicrecordID = BR.BibliographicrecordID 
+
+	JOIN polaris.BibliographicSubfields BS (NOLOCK) ON BS.BibliographictagID = BT.BibliographicTagID 
+
+	JOIN polaris.RecordSets RS (NOLOCK) ON RS.RecordSetID = BRS.RecordSetID 
+
+	WHERE 
+
+	RS.RecordSetID = 87265 AND 
+
+	TagNumber =035
+
+	AND BS.Subfield LIKE  'a' AND Data LIKE '(OCoLC)%')

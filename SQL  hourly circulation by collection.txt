@@ -1,0 +1,12 @@
+Here is a script that may be what you are looking for.  It assumes you have access to the MS SQL Server Management Studio on you Production server.  Make changes to the 3 SET lines for your organization.
+
+DECLARE @OrganizationID int
+DECLARE @StartDateTime datetime
+DECLARE @EndDateTime datetime
+SET @OrganizationID = '9'
+SET @StartDateTime = '2011-07-01 00:00:00.000'
+SET @EndDateTime = '2011-07-31 23:59:59.999'
+SELECT *
+FROM PolarisTransactions.Polaris.Aggregates WITH (NOLOCK) WHERE AggregateTypeID = 49 AND OrganizationID = @OrganizationID AND StartDateTime >= @StartDateTime AND EndDateTime ORDER BY StartDateTime
+
+

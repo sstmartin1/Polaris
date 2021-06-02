@@ -1,0 +1,4 @@
+SELECT PR.PatronID as RecordID from PatronRegistration PR WITH (NOLOCK) 
+JOIN Patrons P on PR.PatronID=P.PatronID
+WHERE PR.RegistrationDate < getdate()-1825 and (P.LastActivityDate < getdate()-1825 or P.LastActivityDate is null) and P.LostItemCount < 1 and P.ChargesAmount=0 and P.CreditsAmount=0 and PR.DeletionExempt=0
+

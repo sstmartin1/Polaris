@@ -1,0 +1,24 @@
+USE Polaris
+ 
+SELECT
+ BR.BibliographicRecordID,
+ BR.BrowseCallNo AS CallNumber,
+ BR.BrowseAuthor AS Author, 
+ BR.BrowseTitle AS Title, 
+ BR.PublicationYear AS PubYear,
+ sum(PY.YTDCircCount) AS PrevYRCirc
+       
+FROM Polaris.BibliographicRecords BR (Nolock)
+ 
+JOIN Polaris.CircItemRecords CIR (nolock) ON CIR.AssociatedBibRecordID = BR.BibliographicRecordID
+ 
+JOIN Polaris.PrevYearItemsCirc PY (nolock)ON PY.ItemRecordID = CIR.ItemRecordID 
+ 
+WHERE CIR.AssignedCollectionID in (9,31) -- fiction
+AND PY.YTDCircCount > '0'
+ 
+GROUP BY BR.BibliographicRecordID, BR.BrowseCallNo, BR.BrowseAuthor, BR.BrowseTitle, BR.PublicationYear
+ 
+ORDER BY sum(PY.YTDCircCount) DESC
+ 
+To sort descending, just type DESC after the ORDER BY statement.

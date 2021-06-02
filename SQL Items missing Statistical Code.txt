@@ -1,0 +1,10 @@
+SELECT ItemRecordID INTO #TEMP
+FROM CircItemRecords
+WHERE StatisiticalCodeID IS NULL
+AND RecordStatusID <> 4
+INSERT INTO ItemRecordSets
+(RecordSetID, ItemRecordID)
+SELECT 21339, ItemRecordID FROM #TEMP
+DROP TABLE #TEMP
+
+

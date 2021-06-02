@@ -1,0 +1,5 @@
+SELECT BibliographicRecordID as recordid
+FROM Polaris.BibliographicTags with (nolock)
+WHERE EffectiveTagNumber=938
+ 
+

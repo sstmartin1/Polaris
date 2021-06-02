@@ -1,0 +1,6 @@
+select itemrecordid as recordid
+from itemcheckouts
+where organizationid = 59
+and checkoutdate > '2011-07-12'
+and duedate between '2011-07-26' 
+and '2011-08-26 23:59:59.999'

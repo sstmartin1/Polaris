@@ -1,0 +1,34 @@
+SQL queries for finding bibs with no good items--and suppressed bibs with good items.
+ 
+I had a request from a co-worker attending PUG to post these find tool SQL queries related to bib records with no good items.  These work for me at the Alachua County Library District (Polaris 4.1, but I think they will work on 4.0).
+
+This query finds non-suppressed, non-deleted bibs with items attached where the total number of items equals the total number of withdrawn, missing, and lost items:
+
+SELECT BR.BibliographicRecordID as RecordID 
+FROM BibliographicRecords BR (NOLOCK)
+LEFT OUTER JOIN RWRITER_BibDerivedDataView RW (NOLOCK)
+ON BR.BibliographicRecordID = RW.BibliographicRecordID
+WHERE RW.NumberofItems = (RW.NumberWithdrawnItems + RW.NumberLostItems + RW.NumberMissingItems) AND RW.NumberOfItems > 0
+AND BR.RecordStatusID= 1 AND BR.DisplayInPac = 1
+(If you do not care about whether a bib is suppressed from the PAC, you can delete the last line.)
+
+This query will find just bibs with holds that match the conditions in the first query:
+
+SELECT BR.BibliographicRecordID as RecordID 
+FROM BibliographicRecords BR (NOLOCK)
+LEFT OUTER JOIN RWRITER_BibDerivedDataView RW (NOLOCK)
+ON BR.BibliographicRecordID = RW.BibliographicRecordID
+WHERE RW.NumberofItems = (RW.NumberWithdrawnItems + RW.NumberLostItems + RW.NumberMissingItems) AND RW.NumberOfItems > 0
+AND RW.NumberActiveHolds > 0
+AND BR.RecordStatusID= 1 AND BR.DisplayInPac = 1
+
+If you have suppressed bibs with no good items in the past, and it is possible that some of them now have good items (missing item is found, lost item is returned, etc.) you can use this query to find them:
+
+SELECT DISTINCT BR.BibliographicRecordID as RecordID 
+FROM BibliographicRecords BR (NOLOCK)
+LEFT OUTER JOIN RWRITER_BibDerivedDataView RW (NOLOCK)
+ON BR.BibliographicRecordID = RW.BibliographicRecordID
+WHERE RW.NumberofItems > (RW.NumberWithdrawnItems + RW.NumberLostItems + RW.NumberMissingItems) AND RW.NumberOfItems > 0
+AND BR.RecordStatusID= 1 AND BR.DisplayInPac = 0
+
+I hope these are helpful.  If they are, I can post them to the SQL queries/scripts section of Polaristown.  Please let me know if they work for you.  You can email me directly at jwhitfield@aclib.us.

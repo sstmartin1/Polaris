@@ -1,0 +1,3 @@
+SELECT Distinct BibliographicRecordID as recordid
+FROM Polaris.BibliographicTags with (nolock)
+WHERE BibliographicRecordID NOT IN (SELECT Distinct BibliographicRecordID FROM Polaris.BibliographicTags with (nolock) WHERE EffectiveTagNumber=914)

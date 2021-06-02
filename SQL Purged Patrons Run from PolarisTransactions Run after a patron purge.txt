@@ -1,0 +1,24 @@
+Purged Patrons. Run from PolarisTransactions. Run after a patron purge.
+ 
+ 
+select td1.NumValue as PatronID, PC.Description as PatronCode, o.Name as PatronBranch, Psc.Description
+from  PolarisTransactions.Polaris.TransactionHeaders th with (index=SK_TranClientDate_TransactionTypeID_TransactionID_OrganizationID,nolock)
+inner join PolarisTransactions.Polaris.TransactionDetails td1 with (nolock)
+on (th.TransactionID = td1.TransactionID and td1.transactionSubtypeID = 6)
+inner join PolarisTransactions.Polaris.TransactionDetails td2 with (nolock)
+on (th.TransactionID = td2.TransactionID and td2.transactionSubtypeID = 7)
+inner Join Polaris.Polaris.PatronCodes pc with (nolock)
+on (td2.Numvalue = pc.PatronCodeID)
+inner join PolarisTransactions.Polaris.TransactionDetails td3 with (nolock)
+on (th.TransactionID = td3.TransactionID and td3.transactionSubtypeID = 123)
+inner join Polaris.Polaris.Organizations o with (nolock)
+on (td3.NumValue = o.OrganizationID)
+Left join PolarisTransactions.Polaris.TransactionDetails td4 with (nolock)
+on (th.TransactionID = td4.TransactionID and td4.transactionSubtypeID = 33)
+Left Join Polaris.Polaris.PatronStatClassCodes psc with (nolock)
+on (td4.numValue = psc.StatisticalClassID and td3.Numvalue = psc.Organizationid)
+where TransactionTypeID = 2002
+ 
+-- Change Date Range Below (the -2) for your desired date range - Set to two days ago.
+and th.TranClientDate between dateadd(dd,-2,getdate()) and getdate()
+order by td1.NumValue

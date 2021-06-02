@@ -1,0 +1,5 @@
+select patronid as RecordID 
+from itemcheckouts
+group by patronid
+having count (patronid) > 34
+

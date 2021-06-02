@@ -1,0 +1,43 @@
+declare @MaximumBranches int 
+declare @MinimumItemsIn int 
+ 
+set @MaximumBranches = 2 
+set @MinimumItemsIn = 2 
+ 
+select cir.associatedbibrecordid, 
+       br.browsetitle          as Title, 
+       br.browseauthor         as Author, 
+       o.name                  as ItemBranch, 
+       br.publicationyear      as PublicationYear, 
+       count(cir.itemrecordid) as CopiesIn, 
+       mtom.description        as TypeOfMaterial 
+from   polaris.polaris.circitemrecords cir with (nolock) 
+       inner join polaris.polaris.bibliographicrecords br with (nolock) 
+               on cir.associatedbibrecordid = br.bibliographicrecordid 
+       inner join polaris.polaris.organizations o with (nolock) 
+               on cir.assignedbranchid = o.organizationid 
+       inner join polaris.polaris.marctypeofmaterial mtom with (nolock) 
+               on br.primarymarctomid = mtom.marctypeofmaterialid 
+       -- Verify that the associated bib record does not have items in
+       -- at more than the specified maximum number of branches
+where  cir.associatedbibrecordid in 
+       (
+            -- Selects all of the bibs that have items in at the correct
+            -- number of locations
+            select cir.associatedbibrecordid 
+            from   polaris.polaris.circitemrecords cir with (nolock)
+            where  cir.itemstatusid = 1 
+            group  by cir.associatedbibrecordid 
+            having count(distinct cir.assignedbranchid) <= @MaximumBranches
+       )
+       and cir.itemstatusid = 1 
+       and br.recordstatusid = 1 
+       and cir.AssignedCollectionID = 40 
+group  by cir.associatedbibrecordid, 
+          o.name, 
+          br.browsetitle, 
+          br.browseauthor, 
+          br.publicationyear, 
+          mtom.description 
+having count(cir.itemrecordid) >= @MinimumItemsIn 
+order  by associatedbibrecordid

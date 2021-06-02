@@ -1,0 +1,11 @@
+I like the structure of this query because you can do some interesting variations on it...like I use the following every month to find all of the bib records that have no available items, put them into a record set, and then use a batch process to switch 'Display in PAC' from 'Yes' to 'No':
+
+SELECT BR.BibliographicRecordID as RecordID FROM BibliographicRecords BR WITH (NOLOCK) WHERE BR.BibliographicRecordID not in (SELECT BR.BibliographicRecordID as RecordID FROM BibliographicRecords BR WITH (NOLOCK) LEFT JOIN CircItemRecords CIR ON BR.BibliographicRecordID = CIR.AssociatedBibRecordID WHERE CIR.ItemStatusID in (1,2,3,4,5,6,8,9,12,13,14,15,18))
+
+But before I run that procedure, in case any of the Lost, Missing, or otherwise unavailable items have been found during a given month, I first use this query to find any bibs that are set to not display in the PAC, create a record set, and batch switch 'Display in PAC' to 'Yes':
+
+SELECT BR.BibliographicRecordID as recordid FROM BibliographicRecords BR WITH (NOLOCK) WHERE BR.DisplayinPAC=0
+
+
+
+

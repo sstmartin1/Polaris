@@ -1,0 +1,7 @@
+Select TDS.TransactionString, COUNT(VTD.TransactionID) as NumSearches 
+from PolarisTransactions.polaris.ViewTransactionData VTD (nolock)
+Join polaristransactions.polaris.TransactionDetailStrings TDS (nolock)
+on VTD.NumValue=TDS.TransactionStringID
+WHERE TransactionSubTypeID=23
+GROUP BY TDS.TransactionString
+ORDER by NumSearches DESC

@@ -1,0 +1,14 @@
+ 
+select 
+      distinct p.Barcode as PatronBarcode,
+      cast(p.ChargesAmount as decimal(12,2)) as ChargesAmount,
+      pr.PatronFullName,
+      pr.ExpirationDate 
+from Polaris.PatronAccount ac with (nolock)  
+      inner join Polaris.Patrons p with (nolock) on (p.PatronID = ac.PatronID) 
+      inner join Polaris.PatronRegistration pr with (nolock) on (p.PatronID = pr.PatronID) 
+where ac.OrganizationID in (1,2,3,4,5,6,7,8,9,10,11,12,13)  
+and p.ChargesAmount between 10.00 and 25.00  
+and p.LastActivityDate < dateadd(yy,-3,getdate()) 
+and ac.PatronID in (select distinct PatronID from Polaris.Patrons with (nolock) where SystemBlocks = 0)
+order by pr.ExpirationDate desc, p.Barcode, pr.PatronFullName

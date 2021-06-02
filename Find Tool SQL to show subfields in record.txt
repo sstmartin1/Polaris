@@ -1,0 +1,13 @@
+If you mean subfield e in the 300 tag field, try dropping this into the bib record Find Tool SQL search box:
+
+
+
+Select DISTINCT BR.BibliographicRecordID as RecordID
+
+FROM BibliographicRecords BR with (nolock) join BibliographicTagsAndSubfields_View BT with (nolock) on BR.BibliographicRecordID=BT.BibliographicRecordID
+
+WHERE BT.TagNumber='300' and BT.Subfield='e'
+
+
+
+This is a handy search - just change the tag field number and subfield as needed!  And if you don't need the subfield, just delete that last bit.

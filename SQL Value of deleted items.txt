@@ -1,0 +1,14 @@
+Every year the state of Louisiana audits our previous year's records, and asked for a value for the discarded items. Rather than get into the specifics of purchase price, depreciation, and item records lacking such info, we simply take the default value of a standard book and multiply times the number of discarded items for that calendar year. This is sometimes called 'Replacement Fee Default'. Most library systems have a default item value that can be applied in situations where specific purchase information is lacking; we use the default item value for the material type book as it is the most common item we purchase. I've done the math; it works out as a decent 'average' across all material types.
+ 
+I'm about to have to do that state auditor report. This is the script I use to: (it gives you a raw number of total items withdrawn during a specific time frame)-
+ 
+select count (*) from circitemrecords, 
+itemrecorddetails where itemstatusid=11
+and modificationdate between '2011-01-01' and '2011-12-31'
+and circitemrecords.itemrecordid=itemrecorddetails.itemrecordid
+ 
+Notes: status 11 is 'withdrawn'; the 'year-month-day' dates can be modified for whatever time period you need.
+
+ 
+
+

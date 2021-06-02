@@ -1,0 +1,22 @@
+SELECT "BibliographicRecords"."BrowseTitle" as Title,
+        "BibliographicRecords"."BrowseAuthor" as Author,
+        "ItemRecords"."Barcode",
+       -- "Organizations"."Name" as Branch,
+        "Collections"."Name" as Collection,
+        "BibliographicRecords"."BrowseCallNo" as CallNumber,
+        "ItemRecords"."LifetimeCircCount",
+        "ItemStatuses"."Description" As Status,
+        "ItemRecords"."LastCircTransactionDate",
+        "ItemRecords"."YTDCircCount",
+        "PrevYearItemsCirc"."YTDCircCount",
+        "ItemRecords"."CreationDate",
+        "BibliographicRecords"."PublicationYear" as PubYear
+  FROM   (((("Polaris"."Polaris"."BibliographicRecords" "BibliographicRecords" 
+     INNER JOIN "Polaris"."Polaris"."ItemRecords" "ItemRecords" ON "BibliographicRecords"."BibliographicRecordID"="ItemRecords"."AssociatedBibRecordID") 
+     LEFT OUTER JOIN "Polaris"."Polaris"."Organizations" "Organizations" ON "ItemRecords"."OwningBranchID"="Organizations"."OrganizationID") 
+     LEFT OUTER JOIN "Polaris"."Polaris"."Collections" "Collections" ON "ItemRecords"."AssignedCollectionID"="Collections"."CollectionID") 
+     LEFT OUTER JOIN "Polaris"."Polaris"."ItemStatuses" "ItemStatuses" ON "ItemRecords"."ItemStatusID"="ItemStatuses"."ItemStatusID") 
+     LEFT OUTER JOIN "Polaris"."Polaris"."PrevYearItemsCirc" "PrevYearItemsCirc" ON "ItemRecords"."ItemRecordID"="PrevYearItemsCirc"."ItemRecordID"
+WHERE  ("BibliographicRecords"."BrowseCallNo">='600' AND "BibliographicRecords"."BrowseCallNo"<='699.9999')and ItemRecords.LastCircTransactionDate < '08/30/2007' and (ItemStatuses.Description ='in' or ItemStatuses.Description ='out'or ItemStatuses.Description ='missing'or ItemStatuses.Description ='held')and Organizations.name = 'Main Library' 
+ ORDER BY "LastCircTransactionDate", "BrowseCallNo", "Organizations"."Name", "Collections"."Name", "ItemRecords"."ClassificationNumber", "BibliographicRecords"."BrowseTitle"
+ 

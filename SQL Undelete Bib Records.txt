@@ -1,0 +1,13 @@
+I am not aware of any other way to undelete bib’s but one at a time since the bib records are un-indexed at the time of deletion.  With that said, I found a way to undelete them using the bulk change on our training server.  Using SQL I changed the record status from Deleted (4) to Provisional (2) which then allowed me to use the Bulk Change in the Bib Recordset making the change from provisional to Final which appears to have re-indexed the records.  Below is the script I used which worked for me on our training server.
+ 
+begin tran
+update BibliographicRecords
+set RecordStatusID = 2
+where BibliographicRecordID in 
+(Select  BibliographicRecordID 
+from BibRecordSets
+where RecordSetID = [enter your recordsetid here]
+-- commit
+-- rollback
+ 
+If the number of records updated matches the number of records in your recordset then highlight the Commit and execute so it will commit the changes to your database.  If not then execute the rollback.

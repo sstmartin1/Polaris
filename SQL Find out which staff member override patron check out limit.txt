@@ -1,0 +1,16 @@
+I took a look and there is a transaction type for “Supervisor override transactions”. Based on the information it provides about the privilege that is overridden this looks like what you’re looking for. I threw together a SQL statement to grab the datetime, the user account and the privilege overridden. In the code provided it only looks at the last seven days, but that could be adjusted.
+ 
+select th.TransactionDate, pu.Name as 'Username', tds.TransactionString as 'Privilege Overridden'
+from PolarisTransactions.polaris.TransactionHeaders th
+inner join PolarisTransactions.polaris.TransactionDetails td  on
+                ( td.TransactionID = th.TransactionID and td.TransactionSubTypeID = 190 )
+inner join polaris.polaris.PolarisUsers pu on
+                ( pu.PolarisUserID = td.numValue )
+inner join PolarisTransactions.polaris.TransactionDetails td2 on
+                ( td2.TransactionID = th.TransactionID and td2.TransactionSubTypeID = 191)
+inner join PolarisTransactions.polaris.TransactionDetailStrings tds on
+                ( td2.numValue = tds.TransactionStringID )
+where th.TransactionTypeID = 9001 and th.TransactionDate >= DATEADD(DAY, -7, GETDATE())
+order by th.TransactionDate desc
+ 
+

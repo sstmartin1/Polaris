@@ -1,0 +1,11 @@
+Gender SQL search from the Patron Find Tool like the following:
+ 
+SELECT PatronID AS RecordID
+FROM PatronRegistration
+WHERE Gender = 'F'
+ 
+Or
+ 
+SELECT PatronID AS RecordID
+FROM PatronRegistration
+WHERE Gender = 'M'

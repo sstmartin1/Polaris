@@ -1,0 +1,133 @@
+UPDATE  @DOWT
+SET     ackin =
+       (SELECT  COUNT(TH.TransactionID)
+        FROM    PolarisTransactions.Polaris.TransactionHeaders TH
+        WHERE   TH.TransactionTypeID = 6002
+        AND     TH.WorkstationID NOT IN (13, -- squeedunk
+                                         14, -- paidion
+                                         26, -- duncan
+                                         27  -- maegwin
+                                         )
+        AND     TH.TranClientDate >= @beginningofyear
+        AND     TH.TranClientDate <  @nextyear
+        AND     DATEPART(weekday, TH.TranClientDate) = dow
+        AND     DATEPART(hour, TH.TranClientDate) = hr
+        );
+UPDATE  @DOWT
+SET     jckin =
+       (SELECT  COUNT(TH.TransactionID)
+        FROM    PolarisTransactions.Polaris.TransactionHeaders TH
+        WHERE   TH.TransactionTypeID = 6002
+        AND     TH.WorkstationID IN (13, -- squeedunk
+                                     14, -- paidion
+                                     26, -- duncan
+                                     27  -- maegwin
+                                     )
+        AND     TH.TranClientDate >= @beginningofyear
+        AND     TH.TranClientDate <  @nextyear
+        AND     DATEPART(weekday, TH.TranClientDate) = dow
+        AND     DATEPART(hour, TH.TranClientDate) = hr
+        );
+
+-- Check Out (NOT renewal):
+UPDATE  @DOWT
+SET     ackout =
+       (SELECT  COUNT(TH.TransactionID)
+        FROM    PolarisTransactions.Polaris.TransactionHeaders TH
+        WHERE   TH.TransactionTypeID = 6001
+        AND     TH.WorkstationID NOT IN (13, -- squeedunk
+                                         14, -- paidion
+                                         26, -- duncan
+                                         27  -- maegwin
+                                         )
+        AND     TH.TranClientDate >= @beginningofyear
+        AND     TH.TranClientDate <  @nextyear
+        AND     DATEPART(weekday, TH.TranClientDate) = dow
+        AND     DATEPART(hour, TH.TranClientDate) = hr
+        AND     ((SELECT COUNT(*)
+                  FROM   PolarisTransactions.Polaris.TransactionDetails XTD
+                  WHERE  XTD.TransactionID = TH.TransactionID
+                  AND    XTD.TransactionSubTypeID = 124) = 0)
+        );
+UPDATE  @DOWT
+SET     jckout =
+       (SELECT  COUNT(TH.TransactionID)
+        FROM    PolarisTransactions.Polaris.TransactionHeaders TH
+        WHERE   TH.TransactionTypeID = 6001
+        AND     TH.WorkstationID IN (13, -- squeedunk
+                                     14, -- paidion
+                                         26, -- duncan
+                                         27  -- maegwin
+                                     )
+        AND     TH.TranClientDate >= @beginningofyear
+        AND     TH.TranClientDate <  @nextyear
+        AND     DATEPART(weekday, TH.TranClientDate) = dow
+        AND     DATEPART(hour, TH.TranClientDate) = hr
+        AND     ((SELECT COUNT(*)
+                  FROM   PolarisTransactions.Polaris.TransactionDetails XTD
+                  WHERE  XTD.TransactionID = TH.TransactionID
+                  AND    XTD.TransactionSubTypeID = 124) = 0)
+        );
+
+-- Renewals:
+UPDATE  @DOWT
+SET     arenew =
+       (SELECT  COUNT(TH.TransactionID)
+        FROM    PolarisTransactions.Polaris.TransactionHeaders TH
+        JOIN    PolarisTransactions.Polaris.TransactionDetails TD
+                ON TD.TransactionID = TH.TransactionID
+        WHERE   TH.TransactionTypeID = 6001
+        AND     TH.WorkstationID NOT IN (13, -- squeedunk
+                                         14, -- paidion
+                                         26, -- duncan
+                                         27  -- maegwin
+                                         )
+        AND     TH.TranClientDate >= @beginningofyear
+        AND     TH.TranClientDate <  @nextyear
+        AND     DATEPART(weekday, TH.TranClientDate) = dow
+        AND     DATEPART(hour, TH.TranClientDate) = hr
+        AND     TD.TransactionSubTypeID = 124
+        );
+UPDATE  @DOWT
+SET     jrenew =
+       (SELECT  COUNT(TH.TransactionID)
+        FROM    PolarisTransactions.Polaris.TransactionHeaders TH
+        JOIN    PolarisTransactions.Polaris.TransactionDetails TD
+                ON TD.TransactionID = TH.TransactionID
+        WHERE   TH.TransactionTypeID = 6001
+        AND     TH.WorkstationID IN (13, -- squeedunk
+                                     14, -- paidion
+                                         26, -- duncan
+                                         27  -- maegwin
+                                     )
+        AND     TH.TranClientDate >= @beginningofyear
+        AND     TH.TranClientDate <  @nextyear
+        AND     DATEPART(weekday, TH.TranClientDate) = dow
+        AND     DATEPART(hour, TH.TranClientDate) = hr
+        AND     TD.TransactionSubTypeID = 124
+        );
+
+DECLARE @DOWABBR TABLE (
+    dow  INTEGER,
+    abbr VARCHAR(4)
+);
+INSERT INTO @DOWABBR (dow, abbr) VALUES (1, 'X');
+INSERT INTO @DOWABBR (dow, abbr) VALUES (2, 'M');
+INSERT INTO @DOWABBR (dow, abbr) VALUES (3, 'T');
+INSERT INTO @DOWABBR (dow, abbr) VALUES (4, 'W');
+INSERT INTO @DOWABBR (dow, abbr) VALUES (5, 'R');
+INSERT INTO @DOWABBR (dow, abbr) VALUES (6, 'F');
+INSERT INTO @DOWABBR (dow, abbr) VALUES (7, 'S');
+
+SELECT  D.abbr + ' ' + H.abbr AS 'Time',
+        (CAST(S.ackin  AS FLOAT) / CAST(S.dates AS FLOAT)) AS 'A ckin',
+        (CAST(S.ackout AS FLOAT) / CAST(S.dates AS FLOAT)) AS 'A ckout',
+        (CAST(S.arenew AS FLOAT) / CAST(S.dates AS FLOAT)) AS 'A ren',
+        (CAST(S.jckin  AS FLOAT) / CAST(S.dates AS FLOAT)) AS 'j ckin',
+        (CAST(S.jckout AS FLOAT) / CAST(S.dates AS FLOAT)) AS 'j ckout',
+        (CAST(S.jrenew AS FLOAT) / CAST(S.dates AS FLOAT)) AS 'j ren'
+FROM    @DOWT S
+JOIN    @HOURS H ON H.hr = S.hr
+JOIN    @DOWABBR D ON D.dow = S.dow
+ORDER BY (S.dow * 100) + S.hr
+;

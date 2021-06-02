@@ -1,0 +1,3 @@
+SELECT COUNT (*)
+FROM PatronRegistration PR
+WHERE DATEPART(yyyy, PR.Birthdate) BETWEEN 1992 AND 1996

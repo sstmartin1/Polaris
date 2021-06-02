@@ -1,0 +1,3 @@
+select b.bibliographicrecordid as recordid from bibliographicrecords b join bibliographictags bt on b.bibliographicrecordid = bt.bibliographicrecordid where b.recordstatusid <> 4 and bt.tagnumber = 74 and bt.bibliographicrecordid in (select bt.bibliographicrecordid from bibliographictags bt where bt.tagnumber = 86) and bt.bibliographicrecordid not in (select bt.bibliographicrecordid from bibliographictags bt where bt.tagnumber = 92) and bt.bibliographicrecordid not in (select bt.bibliographicrecordid from bibliographictags bt where bt.tagnumber = 856)
+
+

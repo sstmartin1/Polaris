@@ -1,0 +1,4 @@
+SELECT BRS.BibliographicRecordID as RecordID from BibliographicRecords BR WITH (NOLOCK) 
+join BibRecordSets BRS with (NOLOCK) on BR.BibliographicRecordID=BRS.BibliographicRecordID and BRS.RecordSetID=8083
+left join BibRecordSets BRS2 with (NOLOCK) on BR.BibliographicRecordID=BRS2.BibliographicRecordID and BRS2.RecordSetID=8084
+WHERE BRS2.RecordSetID is null

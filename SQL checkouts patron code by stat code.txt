@@ -1,0 +1,22 @@
+
+ 
+select  torg.name as TransactionBranchName,psc.Description as StatisticalCode,ppc.Description, count(distinct th.transactionid) as Total
+from PolarisTransactions.Polaris.TransactionHeaders th WITH (NOLOCK) 
+inner join PolarisTransactions.Polaris.TransactionDetails td with (nolock) 
+on (th.TransactionID = td.TransactionID)  
+inner join Polaristransactions.Polaris.TransactionDetails td2 with (nolock)
+on (td.TransactionID=td2.TransactionID)
+inner join Polaris.Polaris.Organizations torg with (nolock) 
+on (th.OrganizationID = torg.OrganizationID)   
+left join Polaris.Polaris.StatisticalCodes psc with (nolock) 
+on (td.numvalue = psc.StatisticalCodeID and th.OrganizationID = psc.OrganizationID)
+left join Polaris.Polaris.PatronCodes ppc with (nolock)
+on (td2.numValue = ppc.PatronCodeID) 
+where th.TransactionTypeID = 6001 
+and td.TransactionSubTypeID = 60  
+and th.TranClientDate between '7/1/2011 00:00:00' and '7/31/2011 23:59:59'  
+and th.OrganizationID = ## [fill in the OrgID for the branch]
+and td2.transactionsubtypeid=7
+Group by  torg.name,psc.Description, ppc.Description 
+Order by  torg.name,psc.Description, ppc. Description
+ 
