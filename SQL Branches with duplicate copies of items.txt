@@ -32,7 +32,7 @@ where  cir.associatedbibrecordid in
        )
        and cir.itemstatusid = 1 
        and br.recordstatusid = 1 
-       and cir.AssignedCollectionID = 40 
+       and cir.AssignedCollectionID = 81 --fiction 
 group  by cir.associatedbibrecordid, 
           o.name, 
           br.browsetitle, 
