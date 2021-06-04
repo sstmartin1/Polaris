@@ -1,0 +1,23 @@
+
+
+
+begin tran
+UPDATE PatronRegistration
+SET User4=User3
+WHERE PatronID IN (
+SELECT PatronID
+FROM PatronRecordSets
+WHERE RecordSetID = ?????
+)
+
+--commit
+
+begin tran
+UPDATE PatronRegistration
+SET User3=NULL
+WHERE PatronID IN (
+SELECT PatronID
+FROM PatronRecordSets
+WHERE RecordSetID = ?????
+
+-- commit
