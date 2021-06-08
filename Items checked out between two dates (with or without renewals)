@@ -1,0 +1,73 @@
+/*
+This query pulls a list of items checked out between two given dates, including renewals. It
+returns the transacting library, the PatronID of whoever checked out the item, the ItemRecordID,
+the transaction date, the material type, the item's price, and the item's browse title.
+*/
+
+SELECT
+	cir.Barcode, --added so could import spreadhseet into a record set
+	o.Name AS "Library/Branch",
+    td2.numValue AS "Patron ID",
+    td.numValue AS "Item Record ID",
+    th.TranClientDate AS "Transaction Client Date",
+    mt.[Description] AS "Material Type",
+    CAST(ird.Price AS DECIMAL (20,2)) AS "Item Price",
+    br.BrowseTitle AS "Item Browse Title"
+	
+
+
+FROM
+    PolarisTransactions.Polaris.TransactionHeaders th WITH (NOLOCK)
+
+LEFT OUTER JOIN -- This join pulls in the ItemRecordID
+    PolarisTransactions.Polaris.TransactionDetails td WITH (NOLOCK) ON th.TransactionID = td.TransactionID
+LEFT OUTER JOIN -- This join pulls in the PatronID
+    PolarisTransactions.Polaris.TransactionDetails td2 WITH (NOLOCK) ON th.TransactionID = td2.TransactionID
+LEFT OUTER JOIN -- This join pulls in the MaterialTypeID
+    PolarisTransactions.Polaris.TransactionDetails td3 WITH (NOLOCK) ON th.TransactionID = td3.TransactionID
+INNER JOIN
+    Polaris.Polaris.Organizations o WITH (NOLOCK) ON th.OrganizationID = o.OrganizationID 
+INNER JOIN
+    Polaris.Polaris.ItemRecords ir WITH (NOLOCK) ON (td.numValue = ir.ItemRecordID)
+INNER JOIN
+    Polaris.Polaris.BibliographicRecords br WITH (NOLOCK) ON ir.AssociatedBibRecordID = br.BibliographicRecordID
+INNER JOIN
+    Polaris.Polaris.MaterialTypes mt WITH (NOLOCK) ON mt.MaterialTypeID = td3.numValue
+INNER JOIN
+    Polaris.Polaris.ItemRecordDetails ird WITH (NOLOCK) ON ird.ItemRecordID = ir.ItemRecordID
+INNER JOIN
+	Polaris.Polaris.CircItemRecords cir WITH (NOLOCK) ON ird.ItemRecordID = cir.ItemRecordID
+
+WHERE
+    th.TransactionTypeID = 6001 -- Check out
+AND
+    td.TransactionSubTypeID = 38 -- ItemRecordID
+AND
+    td2.TransactionSubTypeID = 6 -- PatronID
+AND
+    td3.TransactionSubTypeID = 4 -- MaterialTypeID
+AND
+    th.TranClientDate BETWEEN '01/01/2020' AND '12/31/2020 23:59:59'  -- Change dates as needed
+AND
+    mt.MaterialTypeID NOT IN (3,34) -- Exclude material types (useful to eliminate eContent from the count); ebooks & eaudios
+AND
+    th.OrganizationID in (9) -- Adjust OrgIDs as you desire
+/*
+AND 
+	cir.ItemStatusID in (7) --Lost 
+*/
+-- Uncomment the lines below to exclude renewals from your results. --
+-- Make sure your dates match throughout the query to get reliable results! --
+/*
+AND -- Exclude renewals from the results.
+    th.TransactionID NOT IN (
+        SELECT
+            th.TransactionID
+        FROM
+            PolarisTransactions.Polaris.TransactionHeaders th WITH (NOLOCK)
+        INNER JOIN -- Renewals are tagged with TransactionSubTypeID 124
+            PolarisTransactions.Polaris.TransactionDetails td WITH (NOLOCK) ON td.TransactionID = th.TransactionID and th.TransactionTypeID = 6001 and td.TransactionSubTypeID = 124 
+        WHERE
+            th.TranClientDate BETWEEN '01/01/2020' AND '12/31/2020 23:59:59') -- These dates MUST match the dates above
+
+*/
