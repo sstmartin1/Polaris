@@ -1,0 +1,11 @@
+SELECT PA.PatronID, PA.ItemRecordID, CIR.Barcode, B.BrowseTitle, PA.TxnAmount
+FROM Polaris.PatronAccount PA WITH (NOLOCK)
+JOIN Polaris.CircItemRecords CIR WITH (NOLOCK)
+ON CIR.ItemRecordID = PA.ItemRecordID
+JOIN Polaris.BibliographicRecords B WITH (NOLOCK)
+ON CIR.AssociatedBibRecordID = b.BibliographicRecordID
+WHERE CIR.AssignedBranchID = 3 --atl
+AND CIR.ItemStatusID = 7 --lost
+AND PA.BillingStatusID = 1 -- billed
+AND PA.OutstandingAmount > 1.00 --to not get ones already paid
+AND FeeReasonCodeID = '-1' --replacement cost
