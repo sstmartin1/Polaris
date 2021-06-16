@@ -20,3 +20,22 @@ AND th.TransactionTypeID = 6002 -- checkins
 AND td1.TransactionSubTypeID = 128 --designates checkin only
 AND th.TransactionDate BETWEEN '2021-06-14 13:00:00.000' AND '2021-06-14 17:00:00.000' 
 GROUP BY th.PolarisUserID
+
+
+
+--to find UserID's
+select *
+from PolarisUsers
+where OrganizationID =17
+order by Name
+
+
+--used to find other parameters
+select *
+from TransactionTypes WITH (NOLOCK)
+
+SELECT *
+FROM TransactionSubTypes WITH (NOLOCK)
+
+SELECT *
+FROM TransactionSubTypes WITH (NOLOCK)
