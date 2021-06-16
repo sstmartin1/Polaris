@@ -1,0 +1,22 @@
+
+--Checkouts for a staff member by date/time
+SELECT COUNT(th.TransactionTypeID) as Checkouts, th.PolarisUserID
+FROM PolarisTransactions.Polaris.TransactionHeaders AS [th] WITH (NOLOCK)
+INNER JOIN PolarisTransactions.Polaris.TransactionDetails AS [td1] WITH (NOLOCK)
+ON th.TransactionID = td1.TransactionID 
+WHERE th.PolarisUserID IN (145, 124, 128, 151, 521) --specific user
+AND th.TransactionTypeID = 6001 -- checkouts
+AND td1.TransactionSubTypeID = 145 --designates checkouts only
+AND th.TransactionDate BETWEEN '2021-06-14 13:00:00.000' AND '2021-06-14 17:00:00.000' 
+GROUP BY th.PolarisUserID
+
+--Checkins for a staff member by date/time
+SELECT COUNT(th.TransactionTypeID) as Checkins, th.PolarisUserID
+FROM PolarisTransactions.Polaris.TransactionHeaders AS [th] WITH (NOLOCK)
+INNER JOIN PolarisTransactions.Polaris.TransactionDetails AS [td1] WITH (NOLOCK)
+ON th.TransactionID = td1.TransactionID 
+WHERE th.PolarisUserID IN (145, 124, 128, 151, 521)
+AND th.TransactionTypeID = 6002 -- checkins
+AND td1.TransactionSubTypeID = 128 --designates checkin only
+AND th.TransactionDate BETWEEN '2021-06-14 13:00:00.000' AND '2021-06-14 17:00:00.000' 
+GROUP BY th.PolarisUserID
