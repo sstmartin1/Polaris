@@ -1,0 +1,20 @@
+USE Polaris
+SELECT COL.Name AS 'Collection', DatePart(yyyy, getdate()) as 'CurrYear', AVG(BR.PublicationYear) AS 'AvgAge'
+INTO #TEMP
+FROM Polaris.Bibliographicrecords BR WITH (NOLOCK)
+JOIN Polaris.CircItemRecords CIR WITH (NOLOCK)
+ON CIR.AssociatedBibrecordID = BR.BibliographicRecordID
+JOIN Polaris.Collections COL WITH (NOLOCK)
+ON COL.CollectionID = CIR.AssignedCollectionID
+JOIN Polaris.ItemRecordDetails IRD WITH (NOLOCK)
+ON IRD.ItemRecordID = CIR.ItemRecordID
+WHERE CIR.HomeBranchID IN (@GIS_MS_nOrganizationID)
+AND BR.RecordStatusID <> 4
+AND CIR.RecordStatusID <> 4
+AND Col.Name NOT Like '%Periodical%'
+GROUP BY COL.Name
+Order By COL.Name
+SELECT [Collection], AvgAge AS 'Average Age Year', CurrYear-AvgAge AS 'Average Age of Collection'
+FROM #TEMP
+ORDER BY [Collection], AvgAge, CurrYear-AvgAge
+DROP Table #TEMP
