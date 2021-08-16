@@ -1,4 +1,4 @@
-select p.Barcode,pr.PatronFullName,addr.StreetOne,addr.StreetTwo,pos.City,pos.State,pos.PostalCode
+select DISTINCT p.Barcode,pr.PatronFullName,addr.StreetOne,addr.StreetTwo,pos.City,pos.State,pos.PostalCode
 from Polaris.PatronRegistration pr with (nolock)
 inner join Polaris.Patrons p with (nolock)
 on (pr.PatronID = p.PatronID)
